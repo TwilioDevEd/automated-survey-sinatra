@@ -1,9 +1,5 @@
 require 'sinatra/base'
-require 'data_mapper'
-
-require_relative 'models/survey'
-require_relative 'models/question'
-require_relative 'models/answer'
+require_relative './helpers/datamapper_helper'
 
 ENV['RACK_ENV'] ||= 'development'
 
@@ -11,13 +7,7 @@ require 'bundler'
 Bundler.require :default, ENV['RACK_ENV'].to_sym
 
 database_url = 'postgres://localhost/automated_survey_sinatra'
-DataMapper.setup(:default, database_url)
-DataMapper.finalize
-
-# this section automatically creates the tables
-Survey.auto_upgrade!
-Question.auto_upgrade!
-Answer.auto_upgrade!
+DataMapperHelper.setup(database_url)
 
 module AutomatedSurvey
   class App < Sinatra::Base
@@ -25,7 +15,23 @@ module AutomatedSurvey
     set :raise_errors, false
     set :root, File.dirname(__FILE__)
 
-    get '/' do
+    # surveys
+    get '/surveys/call' do
+      'Automated Survey Sinatra'
+    end
+
+    get '/surveys/results' do
+      'Automated Survey Sinatra'
+    end
+
+    # questions
+    get '/questions/find/:question_id' do
+      'Automated Survey Sinatra'
+    end
+
+    # answers
+
+    post '/answers/create' do
       'Automated Survey Sinatra'
     end
 
