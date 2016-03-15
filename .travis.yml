@@ -8,7 +8,6 @@ before_install:
   - sudo apt-get install postgresql-server-dev-9.1 libpq-dev
 
 before_script:
-  - psql -c 'create database automated_survey_sinatra;' -U postgres
   - psql -c 'create database automated_survey_sinatra_test;' -U postgres
 
 install:
