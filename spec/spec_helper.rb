@@ -7,8 +7,9 @@ require_relative '../helpers/datamapper_helper'
 RSpec.configure do |config|
   include Rack::Test::Methods
 
-  database_url = 'postgres://localhost/automated_survey_sinatra_test'
-  DataMapperHelper.setup(database_url)
+  def app
+    AutomatedSurvey::App
+  end
 
   config.formatter = :documentation
   config.before(:each) do
@@ -17,9 +18,5 @@ RSpec.configure do |config|
 
   config.append_after(:each) do
     DatabaseCleaner.clean
-  end
-
-  def app
-    AutomatedSurvey::App
   end
 end

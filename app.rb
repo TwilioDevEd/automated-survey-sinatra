@@ -1,13 +1,12 @@
 require 'sinatra/base'
+require 'sinatra/config_file'
 require_relative './helpers/datamapper_helper'
+require_relative './helpers/request_helper'
 
 ENV['RACK_ENV'] ||= 'development'
 
 require 'bundler'
 Bundler.require :default, ENV['RACK_ENV'].to_sym
-
-database_url = 'postgres://localhost/automated_survey_sinatra'
-DataMapperHelper.setup(database_url)
 
 module AutomatedSurvey
   class App < Sinatra::Base
@@ -15,9 +14,16 @@ module AutomatedSurvey
     set :raise_errors, false
     set :root, File.dirname(__FILE__)
 
+    register Sinatra::ConfigFile
+    config_file 'config/app.yml'
+
+    DataMapperHelper.setup(self.settings.database_url)
+    DataMapperHelper.seed_if_empty
+
     # surveys
     get '/surveys/call' do
-      'Automated Survey Sinatra'
+      survey = Survey.first()
+      TwimlGenerator.generate_for_incoming_call(survey, RequestHelper.base_url(request))
     end
 
     get '/surveys/results' do
