@@ -5,7 +5,7 @@ class Survey
 
   property :id, Serial
   property :title, String
-  property :created_at, DateTime
+  property :created_at, DateTime, :default => lambda{ |p,s| DateTime.now}
 
   has n, :questions
 end
