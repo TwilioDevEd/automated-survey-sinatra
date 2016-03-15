@@ -10,10 +10,11 @@ gem 'bcrypt'
 
 group :test, :development do
   gem 'rspec'
-  gem 'capybara'
 end
 
 group :test do
   gem 'rake'
   gem 'rack-test'
+  gem 'database_cleaner'
+  gem 'nokogiri'
 end
