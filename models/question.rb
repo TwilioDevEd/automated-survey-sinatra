@@ -4,10 +4,9 @@ class Question
   include DataMapper::Resource
 
   property :id, Serial
-  property :body, String
+  property :body, String, length: 255
   property :question_type, Enum[:voice, :numeric, :yesno], default: :voice
-  property :survey, String
-  property :created_at, DateTime, :default => lambda{ |p,s| DateTime.now}
+  property :created_at, DateTime, default: lambda{ |p,s| DateTime.now}
 
   belongs_to :survey
   has n, :answers

@@ -14,4 +14,18 @@ module DataMapperHelper
     Question.auto_upgrade!
     Answer.auto_upgrade!
   end
+
+  def self.seed_if_empty()
+    if Survey.all.count == 0
+      survey = Survey.create(title:'Default')
+      survey.save!
+
+      questions = YAML.load_file('config/questions.yml')
+      questions.each do |q|
+        survey.questions.create(body: q['body'], question_type: q['question_type'])
+      end
+
+      survey.questions.save
+    end
+  end
 end
