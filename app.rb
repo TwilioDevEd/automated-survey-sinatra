@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'sinatra/config_file'
 require_relative './helpers/datamapper_helper'
 require_relative './helpers/request_helper'
+require_relative './lib/twiml_generator'
 
 ENV['RACK_ENV'] ||= 'development'
 
@@ -23,26 +24,28 @@ module AutomatedSurvey
     # surveys
     get '/surveys/call' do
       survey = Survey.first()
-      TwimlGenerator.generate_for_incoming_call(survey, RequestHelper.base_url(request))
+      twiml = TwimlGenerator.generate_for_incoming_call(survey, RequestHelper.base_url(request))
+      content_type 'text/xml'
+      twiml
     end
 
     get '/surveys/results' do
-      'Automated Survey Sinatra'
+      'ok'
     end
 
     # questions
     get '/questions/find/:question_id' do
-      'Automated Survey Sinatra'
+      'ok'
     end
 
     # answers
 
     post '/answers/create' do
-      'Automated Survey Sinatra'
+      'ok'
     end
 
     error do |exception|
-      'An error has ocurred'
+      'An application error has ocurred'
     end
   end
 end

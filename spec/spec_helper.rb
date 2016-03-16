@@ -14,6 +14,7 @@ RSpec.configure do |config|
   config.formatter = :documentation
   config.before(:each) do
     DatabaseCleaner.start
+    DataMapperHelper.seed_if_empty
   end
 
   config.append_after(:each) do
