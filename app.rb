@@ -35,7 +35,11 @@ module AutomatedSurvey
 
     # questions
     get '/questions/find/:question_id' do
-      'ok'
+      question = Question.get(params[:question_id])
+
+      twiml = TwimlGenerator.generate_for_question(question)
+      content_type 'text/xml'
+      twiml
     end
 
     # answers
