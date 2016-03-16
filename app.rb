@@ -40,7 +40,7 @@ module AutomatedSurvey
 
     # answers
 
-    post '/answers/create' do
+    post '/questions/:question_id/answers' do
       'ok'
     end
 
