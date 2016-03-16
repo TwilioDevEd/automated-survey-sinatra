@@ -34,7 +34,7 @@ module AutomatedSurvey
     end
 
     # questions
-    get '/questions/find/:question_id' do
+    get '/questions/:question_id' do
       question = Question.get(params[:question_id])
 
       twiml = TwimlGenerator.generate_for_question(question)
