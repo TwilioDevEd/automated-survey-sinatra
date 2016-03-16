@@ -1,8 +1,6 @@
 require_relative '../spec_helper'
 
-
 describe 'GET /surveys/call' do
-
   it "should call TwimlGenerator.generate_for_incoming_call and " do
     survey = Survey.first()
 
