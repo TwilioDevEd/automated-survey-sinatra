@@ -10,4 +10,9 @@ class Question
 
   belongs_to :survey
   has n, :answers
+
+  def self.find_next(question_id)
+    question = Question.get(question_id)
+    Question.first(id: question_id + 1, survey: question.survey)
+  end
 end
