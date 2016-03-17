@@ -5,7 +5,7 @@ require_relative '../../lib/twiml_generator'
 describe TwimlGenerator do
   describe '.generate_for_incoming_call' do
     context "if question type is voice" do
-      it 'generates twiml with say and play nodes' do
+      it 'should generate twiml with say and play nodes' do
         survey_double =  double(:survey)
         expect(survey_double).to receive(:title).and_return('FIRST')
 
@@ -25,7 +25,7 @@ describe TwimlGenerator do
 
   describe '.generate_for_question' do
     context "if question type is voice" do
-      it 'generates twiml using record' do
+      it 'should generate twiml using record' do
         question = Question.new(id: 1, body:"How's the weather?" , question_type: :voice)
 
         xml_string = described_class.generate_for_question(question)
@@ -53,7 +53,7 @@ describe TwimlGenerator do
           question_type: :yesno
         }
       ].each do |options|
-        it 'generates twiml using gather' do
+        it 'should generate twiml using gather' do
           question = Question
             .new(id: options[:id], body: options[:body], question_type: options[:question_type])
 
@@ -72,7 +72,7 @@ describe TwimlGenerator do
   end
 
   describe '.generate_for_exit' do
-    it 'generates twiml with say and hangup' do
+    it 'should generate twiml with say and hangup' do
       xml_string = described_class.generate_for_exit()
 
       document = Nokogiri::XML(xml_string)
