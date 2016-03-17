@@ -25,6 +25,7 @@ module AutomatedSurvey
     get '/surveys/call' do
       survey = Survey.first()
       twiml = TwimlGenerator.generate_for_incoming_call(survey, RequestHelper.base_url(request))
+
       content_type 'text/xml'
       twiml
     end
@@ -36,19 +37,33 @@ module AutomatedSurvey
     # questions
     get '/questions/:question_id' do
       question = Question.get(params[:question_id])
-
       twiml = TwimlGenerator.generate_for_question(question)
+
       content_type 'text/xml'
       twiml
     end
 
     # answers
-
     post '/questions/:question_id/answers' do
-      'ok'
+      answer = Answer.create(
+        recording_url: params[:recording_url],
+        digits: params[:digits],
+        call_sid: params[:call_sid],
+        from: params[:from],
+        question_id: params[:question_id].to_i
+      )
+      answer.save!
+
+      next_question = Question.find_next(params[:question_id].to_i)
+      twiml = next_question != nil ?
+        TwimlGenerator.generate_for_question(next_question) : TwimlGenerator.generate_for_exit
+
+      content_type 'text/xml'
+      twiml
     end
 
     error do |exception|
+      p exception
       'An application error has ocurred'
     end
   end
