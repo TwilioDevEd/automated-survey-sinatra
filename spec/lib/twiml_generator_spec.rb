@@ -70,4 +70,19 @@ describe TwimlGenerator do
       end
     end
   end
+
+  describe '.generate_for_exit' do
+    it 'generates twiml with say and hangup' do
+      xml_string = described_class.generate_for_exit()
+
+      document = Nokogiri::XML(xml_string)
+      nodes = document.root.children
+
+      expect(document.at_xpath('//Response//Say').content)
+        .to eq('Thanks for your time. Good bye')
+      expect(document.at_xpath('//Response//Hangup').content).to eq('')
+    end
+  end
+
+
 end

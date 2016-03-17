@@ -23,6 +23,13 @@ module TwimlGenerator
     end.to_xml
   end
 
+  def self.generate_for_exit()
+    Twilio::TwiML::Response.new do |r|
+      r.Say 'Thanks for your time. Good bye'
+      r.Hangup
+    end.to_xml
+  end
+
   module QuestionMessages
     def self.message_from_type
       types_messages = Hash.new
