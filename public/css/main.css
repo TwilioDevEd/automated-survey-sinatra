@@ -1,0 +1,12 @@
+footer {
+    bottom: 10px;
+    text-align: center;
+}
+
+.navbar-fixed-top {
+  position: initial;
+}
+
+footer i {
+    color:#ff0000;
+}

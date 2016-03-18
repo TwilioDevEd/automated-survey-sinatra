@@ -1,5 +1,6 @@
 require 'sinatra/base'
 require 'sinatra/config_file'
+require 'tilt/erb'
 require_relative './helpers/datamapper_helper'
 require_relative './helpers/request_helper'
 require_relative './lib/twiml_generator'
@@ -21,6 +22,11 @@ module AutomatedSurvey
     DataMapperHelper.setup(self.settings.database_url)
     DataMapperHelper.seed_if_empty
 
+    # home
+    get '/' do
+      erb :index
+    end
+
     # surveys
     get '/surveys/call' do
       survey = Survey.first()
@@ -31,7 +37,18 @@ module AutomatedSurvey
     end
 
     get '/surveys/results' do
-      'ok'
+      survey = Survey.first
+      calls = Answer
+        .all(fields: [:id, :call_sid], unique: true, order: nil)
+        .collect{|a| a.call_sid}
+        .uniq
+
+      answers_per_call = Hash.new
+      calls.each do |call_sid|
+        answers_per_call[call_sid] = Answer.all(call_sid: call_sid)
+      end
+
+      erb :results, locals: {answers_per_call: answers_per_call, survey: survey}
     end
 
     # questions

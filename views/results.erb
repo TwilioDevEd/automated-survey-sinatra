@@ -1,0 +1,34 @@
+<h1>Results for survey: <%= survey.title %></h1>
+    <div class="col-md-12">
+        <ul class="list-unstyled">
+            <% answers_per_call.each do |call_sid, answers| %>
+                <li>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Response from: <%= call_sid %>
+                        </div>
+                        <div class="panel-body">
+                          <% answers.each do |answer| %>
+                            <ol class="list-group">
+                               <li class="list-group-item">Question: <%= answer.question.body %></li>
+                               <li class="list-group-item">Answer type: <strong><%= answer.question.question_type.to_s %></strong></li>
+                               <li class="list-group-item">
+                                 <% case answer.question.question_type
+                                 when :voice %>
+                                   <div class="voice-response">
+                                       <span class="voice-response-text">Response:</span>
+                                       <i class="fa fa-play-circle fa-2x play-icon"></i>
+                                       <audio class="voice-response" src="{{ $questionResponse->response }}"></audio>
+                                   </div>
+                                 <% when :yesno %><%= answer.digits == '1' ? 'Yes' : 'No' %>
+                                 <% when :numeric %><%= answer.digits %>
+                                 <% end %>
+                               </li>
+                            </ol>
+                            <% end %>
+                        </div>
+                    </div>
+                </li>
+            <% end %>
+        </ul>
+    </div>

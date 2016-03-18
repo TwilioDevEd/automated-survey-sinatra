@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automated Survey</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" >
+  <link rel="stylesheet" href="/css/main.css" >
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a href="/" class="navbar-brand">Automated Survey</a>
+          </div>
+          <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                  <li><a href="/surveys/results" class="navbar-brand">Results</a></li>
+              </ul>
+          </div>
+      </div>
+  </nav>
+  <div class="container">
+    <%= yield %>
+  </div>
+  </hr>
+  <footer>
+      Made with <i class="fa fa-heart"></i> by your pals
+      <a href="http://www.twilio.com">@twilio</a>
+  </footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</body>
+</html>
