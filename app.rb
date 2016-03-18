@@ -28,7 +28,7 @@ module AutomatedSurvey
     end
 
     # surveys
-    get '/surveys/call' do
+    get '/surveys/voice' do
       survey = Survey.first()
       twiml = TwimlGenerator.generate_for_incoming_call(survey, RequestHelper.base_url(request))
 

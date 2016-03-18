@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-describe 'GET /surveys/call' do
+describe 'GET /surveys/voice' do
   it "should call TwimlGenerator.generate_for_incoming_call and return TwiML" do
     survey = Survey.first()
 
@@ -13,7 +13,7 @@ describe 'GET /surveys/call' do
       .once
       .and_return('TwiML')
 
-    get '/surveys/call'
+    get '/surveys/voice'
     expect(last_response).to be_ok
     expect(last_response.body).to include('TwiML')
   end
