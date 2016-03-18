@@ -18,7 +18,7 @@ describe TwimlGenerator do
         expect(document.at_xpath('//Response//Say').content)
           .to eq('Thank you for taking the FIRST survey')
         expect(document.at_xpath('//Response//Redirect').content)
-          .to eq('http://example.com/questions/find/1')
+          .to eq('http://example.com/questions/1')
       end
     end
   end
