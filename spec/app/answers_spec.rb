@@ -6,7 +6,7 @@ describe 'POST /questions/:question_id/answers' do
       answer = Answer.new(
         recording_url: 'http://example.com',
         digits: '1',
-        call_sid: 'CS2222',
+        origin_id: 'CS2222',
         from: '5555555',
         question_id: 1
       )
@@ -16,7 +16,7 @@ describe 'POST /questions/:question_id/answers' do
         .with(hash_including(
           recording_url: 'http://example.com',
           digits: '1',
-          call_sid: 'CS2222',
+          origin_id: 'CS2222',
           from: '5555555',
           question_id: 1))
         .and_return(answer)
@@ -42,7 +42,7 @@ describe 'POST /questions/:question_id/answers' do
       answer = Answer.new(
         recording_url: 'http://example.com',
         digits: '1',
-        call_sid: 'CS2222',
+        origin_id: 'CS2222',
         from: '5555555',
         question_id: 4
       )
@@ -51,7 +51,7 @@ describe 'POST /questions/:question_id/answers' do
         .with(hash_including(
           recording_url: 'http://example.com',
           digits: '1',
-          call_sid: 'CS2222',
+          origin_id: 'CS2222',
           from: '5555555',
           question_id: 4))
         .and_return(answer)

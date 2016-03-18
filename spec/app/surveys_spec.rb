@@ -23,7 +23,7 @@ describe 'GET /surveys/results' do
   it "should render the proper view containing answer related content" do
     answer = Answer.create(
       digits: '1',
-      call_sid: 'CS999999',
+      origin_id: 'CS999999',
       from: '99999999',
       question_id: 1
     )

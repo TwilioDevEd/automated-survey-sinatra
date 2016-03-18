@@ -6,7 +6,7 @@ class Answer
   property :id, Serial
   property :recording_url, String
   property :digits, String
-  property :call_sid, String
+  property :origin_id, String
   property :from, String
   property :created_at, DateTime, :default => lambda{ |p,s| DateTime.now}
 

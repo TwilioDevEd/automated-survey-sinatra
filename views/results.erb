@@ -1,11 +1,11 @@
 <h1>Results for survey: <%= survey.title %></h1>
 <div class="col-md-12">
     <ul class="list-unstyled">
-        <% answers_per_call.each do |call_sid, answers| %>
+        <% answers_per_call.each do |origin_id, answers| %>
             <li>
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Response from: <%= call_sid %>
+                        Response from: <%= origin_id %>
                     </div>
                     <div class="panel-body">
                       <% answers.each do |answer| %>

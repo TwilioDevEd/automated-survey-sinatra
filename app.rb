@@ -36,16 +36,26 @@ module AutomatedSurvey
       twiml
     end
 
+    get '/surveys/sms' do
+      survey = Survey.first()
+      cookies[:something] = 'foobar'
+
+      twiml = TwimlGenerator.generate_for_sms(survey)
+
+      content_type 'text/xml'
+      twiml
+    end
+
     get '/surveys/results' do
       survey = Survey.first
       calls = Answer
-        .all(fields: [:id, :call_sid], unique: true, order: nil)
-        .collect{|a| a.call_sid}
+        .all(fields: [:id, :origin_id], unique: true, order: nil)
+        .collect{|a| a.origin_id}
         .uniq
 
       answers_per_call = Hash.new
-      calls.each do |call_sid|
-        answers_per_call[call_sid] = Answer.all(call_sid: call_sid)
+      calls.each do |origin_id|
+        answers_per_call[origin_id] = Answer.all(origin_id: origin_id)
       end
 
       erb :results, locals: {answers_per_call: answers_per_call, survey: survey}
@@ -65,7 +75,7 @@ module AutomatedSurvey
       answer = Answer.create(
         recording_url: params[:recording_url],
         digits: params[:digits],
-        call_sid: params[:call_sid],
+        origin_id: params[:call_sid],
         from: params[:from],
         question_id: params[:question_id].to_i
       )
