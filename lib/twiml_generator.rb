@@ -9,7 +9,7 @@ module TwimlGenerator
     end.to_xml
   end
 
-  def self.generate_for_question(question)
+  def self.generate_for_voice_question(question)
     action_url = "/questions/#{question.id}/answers"
 
     Twilio::TwiML::Response.new do |r|
@@ -23,12 +23,36 @@ module TwimlGenerator
     end.to_xml
   end
 
-  def self.generate_for_exit()
+  def self.generate_for_exit
     Twilio::TwiML::Response.new do |r|
       r.Say 'Thanks for your time. Good bye'
       r.Hangup
     end.to_xml
   end
+
+  def self.generate_for_sms_question(question, hash={})
+    if question == nil
+      return respond_sms('Thank you for taking this survey. Goodbye!')
+    end
+
+    msg = ''
+    if hash[:first_time]
+      msg << 'Thank you for taking our survey!'
+    end
+    msg << question.body
+    if question.question_type == :yesno
+      msg << "Type 'yes' or 'no'."
+    end
+    respond_sms(msg)
+  end
+
+  def self.respond_sms(message)
+    Twilio::TwiML::Response.new do |r|
+      r.Message message
+    end.to_xml
+  end
+
+  private_class_method :respond_sms
 
   module QuestionMessages
     def self.message_from_type

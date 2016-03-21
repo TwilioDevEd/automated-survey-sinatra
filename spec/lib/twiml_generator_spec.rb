@@ -23,12 +23,13 @@ describe TwimlGenerator do
     end
   end
 
-  describe '.generate_for_question' do
+  describe '.generate_for_voice_question' do
     context "if question type is voice" do
       it 'should generate twiml using record' do
-        question = Question.new(id: 1, body:"How's the weather?" , question_type: :voice)
+        question = Question
+          .new(id: 1, body:"How's the weather?" , question_type: :voice)
 
-        xml_string = described_class.generate_for_question(question)
+        xml_string = described_class.generate_for_voice_question(question)
         document = Nokogiri::XML(xml_string)
 
         expect(document.at_xpath('//Response//Say[1]').content)
@@ -57,7 +58,7 @@ describe TwimlGenerator do
           question = Question
             .new(id: options[:id], body: options[:body], question_type: options[:question_type])
 
-          xml_string = described_class.generate_for_question(question)
+          xml_string = described_class.generate_for_voice_question(question)
           document = Nokogiri::XML(xml_string)
 
           expect(document.at_xpath('//Response//Say[1]').content)
@@ -84,5 +85,73 @@ describe TwimlGenerator do
     end
   end
 
+  describe '.generate_for_sms_question' do
+    context "with a non nil question and 'first_time' set to true" do
+      it 'should generate twiml with Message and welcome message' do
+        question = Question
+          .new(id: 1, body:"Is weather ok?" , question_type: :yesno)
 
+        xml_string = described_class.generate_for_sms_question(question, first_time: true)
+
+        document = Nokogiri::XML(xml_string)
+        nodes = document.root.children
+        expect(document.at_xpath('//Response//Message').content)
+          .to include('Thank you for taking our survey!')
+      end
+    end
+
+    context "with a non nil question and 'first_time' set to false" do
+      it 'should generate twiml with Message and no welcome message' do
+        question = Question
+          .new(id: 1, body:"How's weather?1.Bad 2.OK", question_type: :numeric)
+
+        xml_string = described_class.generate_for_sms_question(question, first_time: false)
+
+        document = Nokogiri::XML(xml_string)
+        nodes = document.root.children
+        expect(document.at_xpath('//Response//Message').content)
+          .to_not include('Thank you for taking our survey!')
+      end
+    end
+
+    context "with a non nil question of type 'yesno'" do
+      it 'should generate twiml with Message and special instructions' do
+        question = Question.new(id: 1, body:"Is weather ok?" , question_type: :yesno)
+
+        xml_string = described_class.generate_for_sms_question(question, first_time: false)
+
+        document = Nokogiri::XML(xml_string)
+        nodes = document.root.children
+        expect(document.at_xpath('//Response//Message').content)
+          .to include("Type 'yes' or 'no'.")
+      end
+    end
+
+    context "with a non nil question which type differs from 'yesno'" do
+      it 'should generate twiml with Message and no special instructions' do
+        question = Question
+          .new(id: 1, body:"How's weather?1.Bad 2.OK", question_type: :numeric)
+
+        xml_string = described_class.generate_for_sms_question(question, first_time: false)
+
+        document = Nokogiri::XML(xml_string)
+        nodes = document.root.children
+        expect(document.at_xpath('//Response//Message').content)
+          .to_not include("Type 'yes' or 'no'.")
+      end
+    end
+
+    context "with a nil question" do
+      it 'should generate twiml with Message and farewell message' do
+        question = nil
+
+        xml_string = described_class.generate_for_sms_question(question, first_time: false)
+
+        document = Nokogiri::XML(xml_string)
+        nodes = document.root.children
+        expect(document.at_xpath('//Response//Message').content)
+          .to include('Thank you for taking this survey. Goodbye!')
+      end
+    end
+  end
 end
