@@ -52,13 +52,13 @@ module AutomatedSurvey
         )
         answer.save!
         question= Question.find_next(question_id.to_i)
-        response.set_cookie "question_id", value: question.id
+        response.set_cookie 'question_id', value: (question == nil ? nil : question.id)
         twiml = TwimlGenerator.generate_for_sms_question(question, first_time: false)
       else
         # First time
         question = Question.get(1)
-        response.set_cookie "question_id", value: question.id
-        response.set_cookie "origin_id", value: Digest::SHA1.hexdigest(params[:sms_sid])[8..16]
+        response.set_cookie 'question_id', value: question.id
+        response.set_cookie 'origin_id', value: Digest::SHA1.hexdigest(params[:sms_sid])[8..16]
         twiml = TwimlGenerator.generate_for_sms_question(question, first_time: true)
       end
 
