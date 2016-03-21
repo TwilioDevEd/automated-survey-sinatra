@@ -38,7 +38,7 @@ describe 'GET /surveys/sms' do
         .once
         .and_return('TwiML')
 
-      get '/surveys/sms', body: "survey", sms_sid: 'S23344444', from: '+4555555'
+      get '/surveys/sms', Body: "survey", SmsSid: 'S23344444', From: '+4555555'
 
       expect(rack_mock_session.cookie_jar['question_id']).to eq("1")
       expect(rack_mock_session.cookie_jar['origin_id']).to eq("682876424")
@@ -74,7 +74,7 @@ describe 'GET /surveys/sms' do
         .once
         .and_return('TwiML')
 
-      get '/surveys/sms', body: "2", sms_sid: 'S23344444', from: '+4555555'
+      get '/surveys/sms', Body: "2", SmsSid: 'S23344444', From: '+4555555'
 
       expect(rack_mock_session.cookie_jar['question_id']).to eq("2")
       expect(rack_mock_session.cookie_jar['origin_id']).to eq("682876424")
@@ -108,7 +108,7 @@ describe 'GET /surveys/sms' do
         .once
         .and_return('TwiML')
 
-      get '/surveys/sms', body: "5", sms_sid: 'S23344444', from: '+4555555'
+      get '/surveys/sms', Body: "5", SmsSid: 'S23344444', From: '+4555555'
 
       expect(rack_mock_session.cookie_jar['question_id']).to eq('')
       expect(rack_mock_session.cookie_jar['origin_id']).to eq("682876424")

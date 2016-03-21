@@ -29,8 +29,8 @@ describe 'POST /questions/:question_id/answers' do
         .once
         .and_return('TwiML')
 
-      post '/questions/1/answers', recording_url: 'http://example.com', digits: '1',
-        call_sid: 'CS2222', from: '5555555'
+      post '/questions/1/answers', RecordingUrl: 'http://example.com', Digits: '1',
+        CallSid: 'CS2222', From: '5555555'
 
       expect(last_response).to be_ok
       expect(last_response.body).to include('TwiML')
@@ -64,8 +64,8 @@ describe 'POST /questions/:question_id/answers' do
         .once
         .and_return('TwiML')
 
-      post '/questions/4/answers', recording_url: 'http://example.com', digits: '1',
-        call_sid: 'CS2222', from: '5555555'
+      post '/questions/4/answers', RecordingUrl: 'http://example.com', Digits: '1',
+        CallSid: 'CS2222', From: '5555555'
 
       expect(last_response).to be_ok
       expect(last_response.body).to include('TwiML')
