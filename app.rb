@@ -1,6 +1,8 @@
 require 'sinatra/base'
 require 'sinatra/config_file'
+require 'sinatra/cookies'
 require 'tilt/erb'
+require 'digest'
 require_relative './helpers/datamapper_helper'
 require_relative './helpers/request_helper'
 require_relative './lib/twiml_generator'
@@ -37,10 +39,28 @@ module AutomatedSurvey
     end
 
     get '/surveys/sms' do
-      survey = Survey.first()
-      cookies[:something] = 'foobar'
+      twiml = ''
+      origin_id = request.cookies['origin_id']
+      question_id = request.cookies['question_id']
 
-      twiml = TwimlGenerator.generate_for_sms(survey)
+      if origin_id != nil && question_id != nil
+        answer = Answer.create(
+          digits: params[:body],
+          origin_id: origin_id,
+          from: params[:from],
+          question_id: question_id.to_i
+        )
+        answer.save!
+        question= Question.find_next(question_id.to_i)
+        response.set_cookie "question_id", value: question.id
+        twiml = TwimlGenerator.generate_for_sms_question(question, first_time: false)
+      else
+        # First time
+        question = Question.get(1)
+        response.set_cookie "question_id", value: question.id
+        response.set_cookie "origin_id", value: Digest::SHA1.hexdigest(params[:sms_sid])[8..16]
+        twiml = TwimlGenerator.generate_for_sms_question(question, first_time: true)
+      end
 
       content_type 'text/xml'
       twiml
@@ -64,7 +84,7 @@ module AutomatedSurvey
     # questions
     get '/questions/:question_id' do
       question = Question.get(params[:question_id])
-      twiml = TwimlGenerator.generate_for_question(question)
+      twiml = TwimlGenerator.generate_for_voice_question(question)
 
       content_type 'text/xml'
       twiml
@@ -83,7 +103,7 @@ module AutomatedSurvey
 
       next_question = Question.find_next(params[:question_id].to_i)
       twiml = next_question != nil ?
-        TwimlGenerator.generate_for_question(next_question) : TwimlGenerator.generate_for_exit
+        TwimlGenerator.generate_for_voice_question(next_question) : TwimlGenerator.generate_for_exit
 
       content_type 'text/xml'
       twiml
