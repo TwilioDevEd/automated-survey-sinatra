@@ -25,7 +25,7 @@ describe 'POST /questions/:question_id/answers' do
         .with(1)
         .and_return(question)
 
-      expect(TwimlGenerator).to receive(:generate_for_question)
+      expect(TwimlGenerator).to receive(:generate_for_voice_question)
         .once
         .and_return('TwiML')
 
