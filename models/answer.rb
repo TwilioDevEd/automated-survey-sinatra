@@ -4,7 +4,7 @@ class Answer
   include DataMapper::Resource
 
   property :id, Serial
-  property :recording_url, String
+  property :recording_url, String, length: 255
   property :digits, String
   property :origin_id, String
   property :from, String

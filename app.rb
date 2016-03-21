@@ -45,9 +45,9 @@ module AutomatedSurvey
 
       if origin_id != nil && question_id != nil
         answer = Answer.create(
-          digits: params[:body],
+          digits: params[:Body],
           origin_id: origin_id,
-          from: params[:from],
+          from: params[:From],
           question_id: question_id.to_i
         )
         answer.save!
@@ -93,10 +93,10 @@ module AutomatedSurvey
     # answers
     post '/questions/:question_id/answers' do
       answer = Answer.create(
-        recording_url: params[:recording_url],
-        digits: params[:digits],
-        origin_id: params[:call_sid],
-        from: params[:from],
+        recording_url: params[:RecordingUrl],
+        digits: params[:Digits],
+        origin_id: params[:CallSid],
+        from: params[:From],
         question_id: params[:question_id].to_i
       )
       answer.save!

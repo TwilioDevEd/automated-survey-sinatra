@@ -5,7 +5,7 @@ module TwimlGenerator
 
     Twilio::TwiML::Response.new do |r|
       r.Say welcome_message
-      r.Redirect redirect_url
+      r.Redirect redirect_url, method: 'get'
     end.to_xml
   end
 
