@@ -18,7 +18,7 @@
                                <div class="voice-response">
                                    <span class="voice-response-text">Response:</span>
                                    <i class="fa fa-play-circle fa-2x play-icon"></i>
-                                   <audio class="voice-response" src="{{ $questionResponse->response }}"></audio>
+                                   <audio class="voice-response" src="<%= answer.recording_url %>"></audio>
                                </div>
                              <% when :yesno %><%= answer.digits == '1' ? 'Yes' : 'No' %>
                              <% when :numeric %><%= answer.digits %>

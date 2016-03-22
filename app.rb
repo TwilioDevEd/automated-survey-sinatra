@@ -21,7 +21,7 @@ module AutomatedSurvey
     register Sinatra::ConfigFile
     config_file 'config/app.yml'
 
-    DataMapperHelper.setup(self.settings.database_url)
+    DataMapperHelper.setup(settings.database_url)
     DataMapperHelper.seed_if_empty
 
     # home
@@ -31,8 +31,9 @@ module AutomatedSurvey
 
     # surveys
     get '/surveys/voice' do
-      survey = Survey.first()
-      twiml = TwimlGenerator.generate_for_incoming_call(survey, RequestHelper.base_url(request))
+      survey = Survey.first
+      twiml = TwimlGenerator
+              .generate_for_incoming_call(survey, RequestHelper.base_url(request))
 
       content_type 'text/xml'
       twiml
@@ -43,22 +44,21 @@ module AutomatedSurvey
       origin_id = request.cookies['origin_id']
       question_id = request.cookies['question_id']
 
-      if origin_id != nil && question_id != nil
-        answer = Answer.create(
+      if first_user_sms?
+        Answer.create(
           digits: params[:Body],
           origin_id: origin_id,
           from: params[:From],
           question_id: question_id.to_i
         )
-        answer.save!
-        question= Question.find_next(question_id.to_i)
-        response.set_cookie 'question_id', value: (question == nil ? nil : question.id)
+        question = Question.find_next(question_id.to_i)
+        new_question_id = question.nil? ? nil : question.id
+        response.set_cookie 'question_id', value: new_question_id
         twiml = TwimlGenerator.generate_for_sms_question(question, first_time: false)
       else
-        # First time
         question = Question.get(1)
-        response.set_cookie 'question_id', value: question.id
-        response.set_cookie 'origin_id', value: Digest::SHA1.hexdigest(params[:SmsSid])[8..16]
+        add_question_id_to_cookie(response, question.id)
+        add_origin_id_to_cookie(params[:SmsSid])
         twiml = TwimlGenerator.generate_for_sms_question(question, first_time: true)
       end
 
@@ -69,16 +69,16 @@ module AutomatedSurvey
     get '/surveys/results' do
       survey = Survey.first
       calls = Answer
-        .all(fields: [:id, :origin_id], unique: true, order: nil)
-        .collect{|a| a.origin_id}
-        .uniq
+              .all(fields: [:id, :origin_id], unique: true, order: nil)
+              .map(&:origin_id)
+              .uniq
 
-      answers_per_call = Hash.new
+      answers_per_call = {}
       calls.each do |origin_id|
         answers_per_call[origin_id] = Answer.all(origin_id: origin_id)
       end
 
-      erb :results, locals: {answers_per_call: answers_per_call, survey: survey}
+      erb :results, locals: { answers_per_call: answers_per_call, survey: survey }
     end
 
     # questions
@@ -92,26 +92,42 @@ module AutomatedSurvey
 
     # answers
     post '/questions/:question_id/answers' do
-      answer = Answer.create(
+      Answer.create(
         recording_url: params[:RecordingUrl],
         digits: params[:Digits],
         origin_id: params[:CallSid],
         from: params[:From],
         question_id: params[:question_id].to_i
       )
-      answer.save!
 
       next_question = Question.find_next(params[:question_id].to_i)
-      twiml = next_question != nil ?
-        TwimlGenerator.generate_for_voice_question(next_question) : TwimlGenerator.generate_for_exit
+      if next_question.nil?
+        twiml = TwimlGenerator.generate_for_exit
+      else
+        twiml = TwimlGenerator.generate_for_voice_question(next_question)
+      end
 
       content_type 'text/xml'
       twiml
     end
 
-    error do |exception|
-      p exception
+    error do
       'An application error has ocurred'
+    end
+
+    private
+
+    def first_user_sms?
+      !(request.cookies['origin_id'].nil? && request.cookies['question_id'].nil?)
+    end
+
+    def add_question_id_to_cookie(response, question_id)
+      response.set_cookie 'question_id', value: question_id
+    end
+
+    def add_origin_id_to_cookie(sms_sid)
+      origin_id = Digest::SHA1.hexdigest(sms_sid)[8..16]
+      response.set_cookie 'origin_id', value: origin_id
     end
   end
 end

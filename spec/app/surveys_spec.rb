@@ -1,8 +1,8 @@
 require_relative '../spec_helper'
 
 describe 'GET /surveys/voice' do
-  it "should call TwimlGenerator.generate_for_incoming_call and return TwiML" do
-    survey = Survey.first()
+  it 'returns TwiML' do
+    survey = Survey.first
 
     allow(RequestHelper).to receive(:base_url)
       .with(anything)
@@ -14,6 +14,7 @@ describe 'GET /surveys/voice' do
       .and_return('TwiML')
 
     get '/surveys/voice'
+
     expect(last_response).to be_ok
     expect(last_response.body).to include('TwiML')
   end
@@ -24,8 +25,8 @@ describe 'GET /surveys/sms' do
     clear_cookies
   end
 
-  context 'while the receiving a user first sms' do
-    it "should respond with the first question and the proper cookies" do
+  context 'when receiving a user first sms' do
+    before do
       question = Question.get(1)
 
       expect(Digest::SHA1).to receive(:hexdigest)
@@ -38,31 +39,38 @@ describe 'GET /surveys/sms' do
         .once
         .and_return('TwiML')
 
-      get '/surveys/sms', Body: "survey", SmsSid: 'S23344444', From: '+4555555'
+      get '/surveys/sms', Body: 'survey', SmsSid: 'S23344444', From: '+4555555'
+    end
 
-      expect(rack_mock_session.cookie_jar['question_id']).to eq("1")
-      expect(rack_mock_session.cookie_jar['origin_id']).to eq("682876424")
+    it 'responds with a cookie referencing the first question' do
+      expect(rack_mock_session.cookie_jar['question_id']).to eq('1')
+    end
+
+    it 'responds with a cookie referencing the origin' do
+      expect(rack_mock_session.cookie_jar['origin_id']).to eq('682876424')
+    end
+
+    it 'responds ok' do
       expect(last_response).to be_ok
       expect(last_response.body).to eq('TwiML')
     end
   end
 
-  context 'while receiving a user sms for the a particular question' do
-    it "should respond with the proper question and cookies" do
+  context 'when receiving a user sms for the a particular question' do
+    before do
       question = Question.get(2)
 
-      set_cookie "question_id=1"
-      set_cookie "origin_id=682876424"
+      set_cookie 'question_id=1'
+      set_cookie 'origin_id=682876424'
 
-      answer_double =  double(:answer)
-      expect(answer_double).to receive(:save!)
+      answer_double = double(:answer)
 
       expect(Answer).to receive(:create)
         .with(hash_including(
-          digits: '2',
-          origin_id: '682876424',
-          from: '+4555555',
-          question_id: 1))
+                digits: '2',
+                origin_id: '682876424',
+                from: '+4555555',
+                question_id: 1))
         .and_return(answer_double)
 
       expect(Question).to receive(:find_next)
@@ -74,29 +82,36 @@ describe 'GET /surveys/sms' do
         .once
         .and_return('TwiML')
 
-      get '/surveys/sms', Body: "2", SmsSid: 'S23344444', From: '+4555555'
+      get '/surveys/sms', Body: '2', SmsSid: 'S23344444', From: '+4555555'
+    end
 
-      expect(rack_mock_session.cookie_jar['question_id']).to eq("2")
-      expect(rack_mock_session.cookie_jar['origin_id']).to eq("682876424")
+    it 'responds with a cookie referencing the second question' do
+      expect(rack_mock_session.cookie_jar['question_id']).to eq('2')
+    end
+
+    it 'responds with a cookie referencing the origin' do
+      expect(rack_mock_session.cookie_jar['origin_id']).to eq('682876424')
+    end
+
+    it 'responds ok' do
       expect(last_response).to be_ok
       expect(last_response.body).to eq('TwiML')
     end
   end
 
   context 'while receiving a user sms for the last question' do
-    it "should respond with the proper question and no 'question_id' cookie" do
-      set_cookie "question_id=4"
-      set_cookie "origin_id=682876424"
+    before do
+      set_cookie 'question_id=4'
+      set_cookie 'origin_id=682876424'
 
-      answer_double =  double(:answer)
-      expect(answer_double).to receive(:save!)
+      answer_double = double(:answer)
 
       expect(Answer).to receive(:create)
         .with(hash_including(
-          digits: '5',
-          origin_id: '682876424',
-          from: '+4555555',
-          question_id: 4))
+                digits: '5',
+                origin_id: '682876424',
+                from: '+4555555',
+                question_id: 4))
         .and_return(answer_double)
 
       expect(Question).to receive(:find_next)
@@ -108,10 +123,18 @@ describe 'GET /surveys/sms' do
         .once
         .and_return('TwiML')
 
-      get '/surveys/sms', Body: "5", SmsSid: 'S23344444', From: '+4555555'
+      get '/surveys/sms', Body: '5', SmsSid: 'S23344444', From: '+4555555'
+    end
 
+    it 'responds with a cookie without question reference' do
       expect(rack_mock_session.cookie_jar['question_id']).to eq('')
-      expect(rack_mock_session.cookie_jar['origin_id']).to eq("682876424")
+    end
+
+    it 'responds with a cookie referencing the origin' do
+      expect(rack_mock_session.cookie_jar['origin_id']).to eq('682876424')
+    end
+
+    it 'responds ok' do
       expect(last_response).to be_ok
       expect(last_response.body).to eq('TwiML')
     end
@@ -119,16 +142,16 @@ describe 'GET /surveys/sms' do
 end
 
 describe 'GET /surveys/results' do
-  it "should render the proper view containing answer related content" do
-    answer = Answer.create(
+  it 'renders the proper view containing answer related content' do
+    Answer.create(
       digits: '1',
       origin_id: 'CS999999',
       from: '99999999',
       question_id: 1
     )
-    answer.save!
 
     get '/surveys/results'
+
     expect(last_response).to be_ok
     expect(last_response.body).to include 'CS99999'
   end

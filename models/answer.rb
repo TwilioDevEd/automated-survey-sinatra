@@ -8,7 +8,7 @@ class Answer
   property :digits, String
   property :origin_id, String
   property :from, String
-  property :created_at, DateTime, :default => lambda{ |p,s| DateTime.now}
+  property :created_at, DateTime, default: ->(_, _) { DateTime.now }
 
   belongs_to :question
 end
