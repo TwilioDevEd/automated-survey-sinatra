@@ -32,7 +32,7 @@ describe 'GET /surveys/sms' do
       expect(Digest::SHA1).to receive(:hexdigest)
         .with('S23344444')
         .once
-        .and_return('32746274682876424876487')
+        .and_return('682876424')
 
       expect(TwimlGenerator).to receive(:generate_for_sms_question)
         .with(question, hash_including(first_time: true))
@@ -47,7 +47,7 @@ describe 'GET /surveys/sms' do
     end
 
     it 'responds with a cookie referencing the origin' do
-      expect(rack_mock_session.cookie_jar['origin_id']).to eq('682876424')
+      expect(rack_mock_session.cookie_jar['origin']).to eq('682876424')
     end
 
     it 'responds ok' do
@@ -61,14 +61,14 @@ describe 'GET /surveys/sms' do
       question = Question.get(2)
 
       set_cookie 'question_id=1'
-      set_cookie 'origin_id=682876424'
+      set_cookie 'origin=682876424'
 
       answer_double = double(:answer)
 
       expect(Answer).to receive(:create)
         .with(hash_including(
-                digits: '2',
-                origin_id: '682876424',
+                user_input: '2',
+                origin: '682876424',
                 from: '+4555555',
                 question_id: 1))
         .and_return(answer_double)
@@ -90,7 +90,7 @@ describe 'GET /surveys/sms' do
     end
 
     it 'responds with a cookie referencing the origin' do
-      expect(rack_mock_session.cookie_jar['origin_id']).to eq('682876424')
+      expect(rack_mock_session.cookie_jar['origin']).to eq('682876424')
     end
 
     it 'responds ok' do
@@ -99,17 +99,17 @@ describe 'GET /surveys/sms' do
     end
   end
 
-  context 'while receiving a user sms for the last question' do
+  context 'when receiving a user sms for the last question' do
     before do
       set_cookie 'question_id=4'
-      set_cookie 'origin_id=682876424'
+      set_cookie 'origin=682876424'
 
       answer_double = double(:answer)
 
       expect(Answer).to receive(:create)
         .with(hash_including(
-                digits: '5',
-                origin_id: '682876424',
+                user_input: '5',
+                origin: '682876424',
                 from: '+4555555',
                 question_id: 4))
         .and_return(answer_double)
@@ -131,7 +131,7 @@ describe 'GET /surveys/sms' do
     end
 
     it 'responds with a cookie referencing the origin' do
-      expect(rack_mock_session.cookie_jar['origin_id']).to eq('682876424')
+      expect(rack_mock_session.cookie_jar['origin']).to eq('682876424')
     end
 
     it 'responds ok' do
@@ -144,8 +144,8 @@ end
 describe 'GET /surveys/results' do
   it 'renders the proper view containing answer related content' do
     Answer.create(
-      digits: '1',
-      origin_id: 'CS999999',
+      user_input: '1',
+      origin: 'CS999999',
       from: '99999999',
       question_id: 1
     )

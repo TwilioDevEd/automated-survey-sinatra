@@ -38,7 +38,7 @@ module TwimlGenerator
     msg = ''
     msg << 'Thank you for taking our survey!' if hash[:first_time]
     msg << question.body
-    msg << "Type '1' or '0'." if question.yes_no?
+    msg << QuestionMessages.message_for(:yesno_sms) if question.yes_no?
     respond_sms(msg)
   end
 
@@ -55,7 +55,8 @@ module TwimlGenerator
       {
         yesno: 'Please press the 1 for yes and the 0 for no and then hit the pound sign',
         voice: 'Please record your answer after the beep and then hit the pound sign',
-        numeric: 'Please press a number between 0 and 9 and then hit the pound sign'
+        numeric: 'Please press a number between 0 and 9 and then hit the pound sign',
+        yesno_sms: " Type '1' or '0'."
       }.fetch(type)
     end
   end

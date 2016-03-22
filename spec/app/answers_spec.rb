@@ -5,8 +5,8 @@ describe 'POST /questions/:question_id/answers' do
     it 'creates a new answer and return TwiML for the second question' do
       answer = Answer.new(
         recording_url: 'http://example.com',
-        digits: '1',
-        origin_id: 'CS2222',
+        user_input: '1',
+        origin: 'CS2222',
         from: '5555555',
         question_id: 1
       )
@@ -15,8 +15,8 @@ describe 'POST /questions/:question_id/answers' do
       expect(Answer).to receive(:create)
         .with(hash_including(
                 recording_url: 'http://example.com',
-                digits: '1',
-                origin_id: 'CS2222',
+                user_input: '1',
+                origin: 'CS2222',
                 from: '5555555',
                 question_id: 1))
         .and_return(answer)
@@ -43,8 +43,8 @@ describe 'POST /questions/:question_id/answers' do
     it 'creates a new answer and return TwiML for exiting the survey' do
       answer = Answer.new(
         recording_url: 'http://example.com',
-        digits: '1',
-        origin_id: 'CS2222',
+        user_input: '1',
+        origin: 'CS2222',
         from: '5555555',
         question_id: 4
       )
@@ -52,8 +52,8 @@ describe 'POST /questions/:question_id/answers' do
       expect(Answer).to receive(:create)
         .with(hash_including(
                 recording_url: 'http://example.com',
-                digits: '1',
-                origin_id: 'CS2222',
+                user_input: '1',
+                origin: 'CS2222',
                 from: '5555555',
                 question_id: 4))
         .and_return(answer)

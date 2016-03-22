@@ -1,11 +1,11 @@
 <h1>Results for survey: <%= survey.title %></h1>
 <div class="col-md-12">
     <ul class="list-unstyled">
-        <% answers_per_call.each do |origin_id, answers| %>
+        <% answers_per_call.each do |origin, answers| %>
             <li>
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Response from: <%= origin_id %>
+                        Response from: <%= origin %>
                     </div>
                     <div class="panel-body">
                       <% answers.each do |answer| %>
@@ -15,13 +15,18 @@
                            <li class="list-group-item">
                              <% case answer.question.question_type
                              when :voice %>
+                             <% if answer.recording_url.nil? %>
+                                <%= answer.user_input %>
+                             <% else %>
                                <div class="voice-response">
-                                   <span class="voice-response-text">Response:</span>
-                                   <i class="fa fa-play-circle fa-2x play-icon"></i>
-                                   <audio class="voice-response" src="<%= answer.recording_url %>"></audio>
+                                 <span class="voice-response-text">Response:</span>
+                                  <audio class="voice-response" src="<%= answer.recording_url %>" controls="true">
+                                    Your browser does not support the <code>audio</code> element.
+                                  </audio>
                                </div>
-                             <% when :yesno %><%= answer.digits == '1' ? 'Yes' : 'No' %>
-                             <% when :numeric %><%= answer.digits %>
+                             <% end %>
+                             <% when :yesno %><%= answer.user_input == '1' ? 'Yes' : 'No' %>
+                             <% when :numeric %><%= answer.user_input %>
                              <% end %>
                            </li>
                         </ol>

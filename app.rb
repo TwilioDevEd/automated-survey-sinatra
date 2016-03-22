@@ -41,13 +41,17 @@ module AutomatedSurvey
 
     get '/surveys/sms' do
       twiml = ''
-      origin_id = request.cookies['origin_id']
+      origin = request.cookies['origin']
       question_id = request.cookies['question_id']
-
       if first_user_sms?
+        question = Question.get(1)
+        add_question_id_to_cookie(response, question.id)
+        add_origin_id_to_cookie(params[:SmsSid])
+        twiml = TwimlGenerator.generate_for_sms_question(question, first_time: true)
+      else
         Answer.create(
-          digits: params[:Body],
-          origin_id: origin_id,
+          user_input: params[:Body],
+          origin: origin,
           from: params[:From],
           question_id: question_id.to_i
         )
@@ -55,11 +59,6 @@ module AutomatedSurvey
         new_question_id = question.nil? ? nil : question.id
         response.set_cookie 'question_id', value: new_question_id
         twiml = TwimlGenerator.generate_for_sms_question(question, first_time: false)
-      else
-        question = Question.get(1)
-        add_question_id_to_cookie(response, question.id)
-        add_origin_id_to_cookie(params[:SmsSid])
-        twiml = TwimlGenerator.generate_for_sms_question(question, first_time: true)
       end
 
       content_type 'text/xml'
@@ -69,13 +68,13 @@ module AutomatedSurvey
     get '/surveys/results' do
       survey = Survey.first
       calls = Answer
-              .all(fields: [:id, :origin_id], unique: true, order: nil)
-              .map(&:origin_id)
+              .all(fields: [:id, :origin], unique: true, order: nil)
+              .map(&:origin)
               .uniq
 
       answers_per_call = {}
-      calls.each do |origin_id|
-        answers_per_call[origin_id] = Answer.all(origin_id: origin_id)
+      calls.each do |origin|
+        answers_per_call[origin] = Answer.all(origin: origin)
       end
 
       erb :results, locals: { answers_per_call: answers_per_call, survey: survey }
@@ -94,8 +93,8 @@ module AutomatedSurvey
     post '/questions/:question_id/answers' do
       Answer.create(
         recording_url: params[:RecordingUrl],
-        digits: params[:Digits],
-        origin_id: params[:CallSid],
+        user_input: params[:Digits],
+        origin: params[:CallSid],
         from: params[:From],
         question_id: params[:question_id].to_i
       )
@@ -118,7 +117,8 @@ module AutomatedSurvey
     private
 
     def first_user_sms?
-      !(request.cookies['origin_id'].nil? && request.cookies['question_id'].nil?)
+      request.cookies['origin'].to_s.empty? ||
+        request.cookies['question_id'].to_s.empty?
     end
 
     def add_question_id_to_cookie(response, question_id)
@@ -126,8 +126,8 @@ module AutomatedSurvey
     end
 
     def add_origin_id_to_cookie(sms_sid)
-      origin_id = Digest::SHA1.hexdigest(sms_sid)[8..16]
-      response.set_cookie 'origin_id', value: origin_id
+      origin = Digest::SHA1.hexdigest(sms_sid)
+      response.set_cookie 'origin', value: origin
     end
   end
 end
