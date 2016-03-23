@@ -15,7 +15,7 @@ surveys using Twilio&#39;s voice/sms API and TwiML. Survey takers will interact
 with the application through the phone, allowing it to persist the answers
 which you can consult later using a survey results page.</p>
 <p>For the sake for simplicity this sample application take answers for a single 
-survey and its questions which are loaded when it starts the first time</p>
+survey and its questions, which are loaded when it starts the first time</p>
 <p>Let&#39;s get started! </p>
 <hr>
 <p><strong>See Also</strong></p>
@@ -27,13 +27,6 @@ survey and its questions which are loaded when it starts the first time</p>
 <li><a href="http://datamapper.org/">DataMapper ORM</a></li>
 <li><a href="//www.sinatrarb.com/contrib/config_file.html#label-Modular+Application">Sinatra configuration files</a></li>
 </ul>
-</div><div data-title="Application Models" data-file="config/app.yml" class="step"><h2 id="application-models">Application Models</h2>
-<p>The application only requires a running 
-PostgreSQL database. You may setup the application test and development
-connection strings at the <code>config/app.yml</code> file, which already comes with 
-default values</p>
-<hr>
-<p><strong>See Also:</strong></p>
 </div><div data-title="Preparing Survey" data-file="helpers/datamapper_helper.rb" data-highlight="18-29" class="step"><h2 id="preparing-surveys">Preparing Surveys</h2>
 <p>In order to perform automated surveys we first need to have some
 questions to ask. For your convenience, the application&#39;s
@@ -52,7 +45,7 @@ URL configured under it with the HTTP method specified (either GET
 or POST).</p>
 <p>For this application, Twilio should be configured to make a GET request to
 the application&#39;s <code>/surveys/voice</code> endpoint. The controller then delegates the
-TwiML generation to an abstraction called <code>TwimlGenerator</code>. You may find more 
+TwiML generation to an abstraction called <code>TwimlGenerator</code>. You&#39;ll find more 
 about handling this voice request 
 <a href="//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/app.rb#L33-L40">here</a></p>
 <p>The <code>TwimlGenerator</code> abstraction will look for our only survey, and after stating 
@@ -60,7 +53,7 @@ its name and welcoming the user using TwiML&#39;s
 <a href="https://www.twilio.com/docs/api/twiml/say"><code>Say</code></a> verb, it will redirect the call
 to the first question using the <a href="https://www.twilio.com/docs/api/twiml/redirect"><code>Redirect</code></a>.
 verb.</p>
-<p>Next, we will handle the request made after the redirect.</p>
+<p>Next, we&#39;ll handle the request made after the redirect.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>
@@ -84,15 +77,15 @@ type of question we ask. In both cases the app use the
 If the question
 is of kind <code>voice</code> then we use the
 <a href="https://www.twilio.com/docs/api/twiml/record"><code>Record</code></a>
-verb. However, if we expect dialpad input we use the the
+verb. However, if we expect dialpad input, we use the the
 <a href="https://www.twilio.com/docs/api/twiml/gather"><code>Gather</code></a>
 verb. Both verbs take an <code>action</code> attribute and a <code>method</code>
 attribute. Twilio will use both attributes to make a
 request we can use to store the caller&#39;s answer to the question.</p>
 <p>Since we want to create a new resource in our server, the HTTP
 method will be <code>POST</code> for both <code>Gather</code> and <code>Record</code> and
-<code>action</code> URL will be <code>/questions/:question_id/answers</code>.</p>
-</div><div data-title="Store a Question's Answer" data-file="app.rb" data-highlight="93-111" class="step"><h2 id="store-a-question-s-answer">Store a Question&#39;s Answer</h2>
+<code>action</code> URL will be like <code>/questions/:question_id/answers</code>.</p>
+</div><div data-title="Persist a Question's Answer" data-file="app.rb" data-highlight="93-111" class="step"><h2 id="persist-a-question-s-answer">Persist a Question&#39;s Answer</h2>
 <p>Now, Twilio has made a POST request to the
 <code>/questions/:question_id/answers</code> URL.  The request includes
 everything we need to record the caller&#39;s answer to our
@@ -103,7 +96,7 @@ with every request. For this sample application we will store
 the <code>RecordingUrl</code> or <code>Digits</code> parameter for voice and
 <code>yes-no/numeric</code> answers accordingly. The app also
 save the <code>CallSid</code> so we can uniquely identify the <code>origin</code> of the call.</p>
-<p>As most surveys include more than a single question the app should
+<p>As most surveys include more than a single question, the app should
 <a href="//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/lib/twiml_generator.rb#L12-L24">redirect the user to the next question</a> 
 using the <a href="https://www.twilio.com/docs/api/twiml/redirect">Redirect</a> verb
 again.</p>
@@ -116,15 +109,14 @@ using the <a href="https://www.twilio.com/docs/api/twiml/hangup"><code>Hangup</c
 <p>We just saw how to handle surveys over voice calls, it&#39;s time to introduce 
 how to do it with SMS.</p>
 <p>Now, while taking a survey in a phone call, you don&#39;t have troubles to identify
-every answer <code>origin</code> because the app uses the <code>CallSid</code> parameter for that purpose
-If you try to replicate that behaviour using SMSs, with <code>SmsSid</code> which is the counterpart
-of <code>CallSid</code>, you end up having a different <code>origin</code> for every answer, because
+every answer <code>origin</code> because the app uses the <code>CallSid</code> parameter for that purpose.
+If you try to replicate that behaviour using SMSs, you&#39;d use <code>SmsSid</code>, which is the counterpart
+of <code>CallSid</code>.Then, you end up having a different <code>origin</code> for every answer, because
 every message has a unique <code>SmsSid</code>. </p>
 <p>So, in order to keep track of the conversation
 required to complete the survey questions, we&#39;ll use 
 <a href="//www.twilio.com/help/faq/twilio-basics/how-do-twilio-cookies-work">Twilio cookies</a>.
-That way we could add a unique identifier to the conversation, which allow us to save the 
-answer <code>origin</code> properly. The same approach will be used to deliver the next
+That way we could add a unique identifier to the conversation, which allow us to save every<br>answer&#39;s <code>origin</code> properly. The same approach will be used to deliver the next
 <code>question_id</code> in the subsequent requests.</p>
 <hr>
 <p><strong>See Also:</strong></p>
@@ -140,11 +132,10 @@ and the next question: <code>question_id</code>. Then using the <code>TwimlGener
 method, the application delivers TwiML instructions to send the first question 
 to the survey taker.</p>
 <p>In the other hand, If the SMS comes with the <code>origin</code> and <code>question_id</code> cookies, 
-it means it&#39;s part of a conversation, therefore it contains answer to the referred question. 
-The application then processes the body content, uses it to persists a new answer
+it means it&#39;s part of a conversation, therefore it contains answer to the referred question. </p>
+<p>The application then processes the body content, uses it to persists a new answer
 and finally delivers TwiML instructions to send the next question to the
 survey taker.</p>
-<p>Finally, </p>
 </div><div data-title="Delivering Questions using the SMS Channel" data-file="lib/twiml_generator.rb" data-highlight="33-43" class="step"><h2 id="delivering-questions-using-sms-channel">Delivering Questions using SMS Channel</h2>
 <p>Here the application creates the TwiML for responding to every survey taker SMS.
 For this purpose we&#39;ll use the <a href="https://www.twilio.com/docs/api/twiml/sms/message"><code>Message</code></a> verb every single time.</p>
@@ -152,8 +143,8 @@ For this purpose we&#39;ll use the <a href="https://www.twilio.com/docs/api/twim
 the survey has ended and it will respond with a farewell grateful message.</p>
 <p>If the <code>first_time</code> hash argument is true, then it means it&#39;s the first 
 message of the conversation and it will include a welcome message and the 
-first question text.</p>
-<p>The rest of the cases it will just respond with the current question text.</p>
+first question&#39;s text.</p>
+<p>For the rest of the cases it will just respond with the current question text.</p>
 </div><div data-file="app.rb" data-highlight="68-81" class="step"><h2 id="display-the-survey-results">Display the survey results</h2>
 <p>For this endpoint we simply query the database using 
 <a href="//datamapper.org/docs/find.html">data_mapper finder methods</a>
@@ -180,8 +171,7 @@ tutorials:</p>
 to share with us, we&#39;d love to hear it.
 <a href="//www.twilio.com/help/contact">Contact support</a> to let us know what you think.</p>
 </div></div>
-<div class="saurus-files" style="display:none;"><textarea class="saurus-file" data-file="app.rb" data-mode="ruby">cmVxdWlyZSAnc2luYXRyYS9iYXNlJwpyZXF1aXJlICdzaW5hdHJhL2NvbmZpZ19maWxlJwpyZXF1aXJlICdzaW5hdHJhL2Nvb2tpZXMnCnJlcXVpcmUgJ3RpbHQvZXJiJwpyZXF1aXJlICdkaWdlc3QnCnJlcXVpcmVfcmVsYXRpdmUgJy4vaGVscGVycy9kYXRhbWFwcGVyX2hlbHBlcicKcmVxdWlyZV9yZWxhdGl2ZSAnLi9oZWxwZXJzL3JlcXVlc3RfaGVscGVyJwpyZXF1aXJlX3JlbGF0aXZlICcuL2xpYi90d2ltbF9nZW5lcmF0b3InCgpFTlZbJ1JBQ0tfRU5WJ10gfHw9ICdkZXZlbG9wbWVudCcKCnJlcXVpcmUgJ2J1bmRsZXInCkJ1bmRsZXIucmVxdWlyZSA6ZGVmYXVsdCwgRU5WWydSQUNLX0VOViddLnRvX3N5bQoKbW9kdWxlIEF1dG9tYXRlZFN1cnZleQogIGNsYXNzIEFwcCA8IFNpbmF0cmE6OkJhc2UKICAgIHNldCA6c2hvd19leGNlcHRpb25zLCBmYWxzZQogICAgc2V0IDpyYWlzZV9lcnJvcnMsIGZhbHNlCiAgICBzZXQgOnJvb3QsIEZpbGUuZGlybmFtZShfX0ZJTEVfXykKCiAgICByZWdpc3RlciBTaW5hdHJhOjpDb25maWdGaWxlCiAgICBjb25maWdfZmlsZSAnY29uZmlnL2FwcC55bWwnCgogICAgRGF0YU1hcHBlckhlbHBlci5zZXR1cChzZXR0aW5ncy5kYXRhYmFzZV91cmwpCiAgICBEYXRhTWFwcGVySGVscGVyLnNlZWRfaWZfZW1wdHkKCiAgICAjIGhvbWUKICAgIGdldCAnLycgZG8KICAgICAgZXJiIDppbmRleAogICAgZW5kCgogICAgIyBzdXJ2ZXlzCiAgICBnZXQgJy9zdXJ2ZXlzL3ZvaWNlJyBkbwogICAgICBzdXJ2ZXkgPSBTdXJ2ZXkuZmlyc3QKICAgICAgdHdpbWwgPSBUd2ltbEdlbmVyYXRvcgogICAgICAgICAgICAgIC5nZW5lcmF0ZV9mb3JfaW5jb21pbmdfY2FsbChzdXJ2ZXksIFJlcXVlc3RIZWxwZXIuYmFzZV91cmwocmVxdWVzdCkpCgogICAgICBjb250ZW50X3R5cGUgJ3RleHQveG1sJwogICAgICB0d2ltbAogICAgZW5kCgogICAgZ2V0ICcvc3VydmV5cy9zbXMnIGRvCiAgICAgIHR3aW1sID0gJycKICAgICAgb3JpZ2luID0gcmVxdWVzdC5jb29raWVzWydvcmlnaW4nXQogICAgICBxdWVzdGlvbl9pZCA9IHJlcXVlc3QuY29va2llc1sncXVlc3Rpb25faWQnXQogICAgICBpZiBmaXJzdF91c2VyX3Ntcz8KICAgICAgICBxdWVzdGlvbiA9IFF1ZXN0aW9uLmdldCgxKQogICAgICAgIGFkZF9xdWVzdGlvbl9pZF90b19jb29raWUocmVzcG9uc2UsIHF1ZXN0aW9uLmlkKQogICAgICAgIGFkZF9vcmlnaW5faWRfdG9fY29va2llKHBhcmFtc1s6U21zU2lkXSkKICAgICAgICB0d2ltbCA9IFR3aW1sR2VuZXJhdG9yLmdlbmVyYXRlX2Zvcl9zbXNfcXVlc3Rpb24ocXVlc3Rpb24sIGZpcnN0X3RpbWU6IHRydWUpCiAgICAgIGVsc2UKICAgICAgICBBbnN3ZXIuY3JlYXRlKAogICAgICAgICAgdXNlcl9pbnB1dDogcGFyYW1zWzpCb2R5XSwKICAgICAgICAgIG9yaWdpbjogb3JpZ2luLAogICAgICAgICAgZnJvbTogcGFyYW1zWzpGcm9tXSwKICAgICAgICAgIHF1ZXN0aW9uX2lkOiBxdWVzdGlvbl9pZC50b19pCiAgICAgICAgKQogICAgICAgIHF1ZXN0aW9uID0gUXVlc3Rpb24uZmluZF9uZXh0KHF1ZXN0aW9uX2lkLnRvX2kpCiAgICAgICAgbmV3X3F1ZXN0aW9uX2lkID0gcXVlc3Rpb24ubmlsPyA/IG5pbCA6IHF1ZXN0aW9uLmlkCiAgICAgICAgcmVzcG9uc2Uuc2V0X2Nvb2tpZSAncXVlc3Rpb25faWQnLCB2YWx1ZTogbmV3X3F1ZXN0aW9uX2lkCiAgICAgICAgdHdpbWwgPSBUd2ltbEdlbmVyYXRvci5nZW5lcmF0ZV9mb3Jfc21zX3F1ZXN0aW9uKHF1ZXN0aW9uLCBmaXJzdF90aW1lOiBmYWxzZSkKICAgICAgZW5kCgogICAgICBjb250ZW50X3R5cGUgJ3RleHQveG1sJwogICAgICB0d2ltbAogICAgZW5kCgogICAgZ2V0ICcvc3VydmV5cy9yZXN1bHRzJyBkbwogICAgICBzdXJ2ZXkgPSBTdXJ2ZXkuZmlyc3QKICAgICAgY2FsbHMgPSBBbnN3ZXIKICAgICAgICAgICAgICAuYWxsKGZpZWxkczogWzppZCwgOm9yaWdpbl0sIHVuaXF1ZTogdHJ1ZSwgb3JkZXI6IG5pbCkKICAgICAgICAgICAgICAubWFwKCY6b3JpZ2luKQogICAgICAgICAgICAgIC51bmlxCgogICAgICBhbnN3ZXJzX3Blcl9jYWxsID0ge30KICAgICAgY2FsbHMuZWFjaCBkbyB8b3JpZ2lufAogICAgICAgIGFuc3dlcnNfcGVyX2NhbGxbb3JpZ2luXSA9IEFuc3dlci5hbGwob3JpZ2luOiBvcmlnaW4pCiAgICAgIGVuZAoKICAgICAgZXJiIDpyZXN1bHRzLCBsb2NhbHM6IHsgYW5zd2Vyc19wZXJfY2FsbDogYW5zd2Vyc19wZXJfY2FsbCwgc3VydmV5OiBzdXJ2ZXkgfQogICAgZW5kCgogICAgIyBxdWVzdGlvbnMKICAgIGdldCAnL3F1ZXN0aW9ucy86cXVlc3Rpb25faWQnIGRvCiAgICAgIHF1ZXN0aW9uID0gUXVlc3Rpb24uZ2V0KHBhcmFtc1s6cXVlc3Rpb25faWRdKQogICAgICB0d2ltbCA9IFR3aW1sR2VuZXJhdG9yLmdlbmVyYXRlX2Zvcl92b2ljZV9xdWVzdGlvbihxdWVzdGlvbikKCiAgICAgIGNvbnRlbnRfdHlwZSAndGV4dC94bWwnCiAgICAgIHR3aW1sCiAgICBlbmQKCiAgICAjIGFuc3dlcnMKICAgIHBvc3QgJy9xdWVzdGlvbnMvOnF1ZXN0aW9uX2lkL2Fuc3dlcnMnIGRvCiAgICAgIEFuc3dlci5jcmVhdGUoCiAgICAgICAgcmVjb3JkaW5nX3VybDogcGFyYW1zWzpSZWNvcmRpbmdVcmxdLAogICAgICAgIHVzZXJfaW5wdXQ6IHBhcmFtc1s6RGlnaXRzXSwKICAgICAgICBvcmlnaW46IHBhcmFtc1s6Q2FsbFNpZF0sCiAgICAgICAgZnJvbTogcGFyYW1zWzpGcm9tXSwKICAgICAgICBxdWVzdGlvbl9pZDogcGFyYW1zWzpxdWVzdGlvbl9pZF0udG9faQogICAgICApCgogICAgICBuZXh0X3F1ZXN0aW9uID0gUXVlc3Rpb24uZmluZF9uZXh0KHBhcmFtc1s6cXVlc3Rpb25faWRdLnRvX2kpCiAgICAgIGlmIG5leHRfcXVlc3Rpb24ubmlsPwogICAgICAgIHR3aW1sID0gVHdpbWxHZW5lcmF0b3IuZ2VuZXJhdGVfZm9yX2V4aXQKICAgICAgZWxzZQogICAgICAgIHR3aW1sID0gVHdpbWxHZW5lcmF0b3IuZ2VuZXJhdGVfZm9yX3ZvaWNlX3F1ZXN0aW9uKG5leHRfcXVlc3Rpb24pCiAgICAgIGVuZAoKICAgICAgY29udGVudF90eXBlICd0ZXh0L3htbCcKICAgICAgdHdpbWwKICAgIGVuZAoKICAgIGVycm9yIGRvCiAgICAgICdBbiBhcHBsaWNhdGlvbiBlcnJvciBoYXMgb2N1cnJlZCcKICAgIGVuZAoKICAgIHByaXZhdGUKCiAgICBkZWYgZmlyc3RfdXNlcl9zbXM/CiAgICAgIHJlcXVlc3QuY29va2llc1snb3JpZ2luJ10udG9fcy5lbXB0eT8gfHwKICAgICAgICByZXF1ZXN0LmNvb2tpZXNbJ3F1ZXN0aW9uX2lkJ10udG9fcy5lbXB0eT8KICAgIGVuZAoKICAgIGRlZiBhZGRfcXVlc3Rpb25faWRfdG9fY29va2llKHJlc3BvbnNlLCBxdWVzdGlvbl9pZCkKICAgICAgcmVzcG9uc2Uuc2V0X2Nvb2tpZSAncXVlc3Rpb25faWQnLCB2YWx1ZTogcXVlc3Rpb25faWQKICAgIGVuZAoKICAgIGRlZiBhZGRfb3JpZ2luX2lkX3RvX2Nvb2tpZShzbXNfc2lkKQogICAgICBvcmlnaW4gPSBEaWdlc3Q6OlNIQTEuaGV4ZGlnZXN0KHNtc19zaWQpCiAgICAgIHJlc3BvbnNlLnNldF9jb29raWUgJ29yaWdpbicsIHZhbHVlOiBvcmlnaW4KICAgIGVuZAogIGVuZAplbmQK</textarea>
-<textarea class="saurus-file" data-file="config/app.yml" data-mode="yaml">ZGV2ZWxvcG1lbnQ6CiAgZGF0YWJhc2VfdXJsOiBwb3N0Z3JlczovL2xvY2FsaG9zdC9hdXRvbWF0ZWRfc3VydmV5X3NpbmF0cmEKCnRlc3Q6CiAgZGF0YWJhc2VfdXJsOiBwb3N0Z3JlczovL2xvY2FsaG9zdC9hdXRvbWF0ZWRfc3VydmV5X3NpbmF0cmFfdGVzdAo=</textarea>
+<div class="saurus-files" style="display:none;"><textarea class="saurus-file" data-file="app.rb" data-mode="ruby">cmVxdWlyZSAnc2luYXRyYS9iYXNlJwpyZXF1aXJlICdzaW5hdHJhL2NvbmZpZ19maWxlJwpyZXF1aXJlICdzaW5hdHJhL2Nvb2tpZXMnCnJlcXVpcmUgJ3RpbHQvZXJiJwpyZXF1aXJlICdkaWdlc3QnCnJlcXVpcmVfcmVsYXRpdmUgJy4vaGVscGVycy9kYXRhbWFwcGVyX2hlbHBlcicKcmVxdWlyZV9yZWxhdGl2ZSAnLi9oZWxwZXJzL3JlcXVlc3RfaGVscGVyJwpyZXF1aXJlX3JlbGF0aXZlICcuL2xpYi90d2ltbF9nZW5lcmF0b3InCgpFTlZbJ1JBQ0tfRU5WJ10gfHw9ICdkZXZlbG9wbWVudCcKCnJlcXVpcmUgJ2J1bmRsZXInCkJ1bmRsZXIucmVxdWlyZSA6ZGVmYXVsdCwgRU5WWydSQUNLX0VOViddLnRvX3N5bQoKbW9kdWxlIEF1dG9tYXRlZFN1cnZleQogIGNsYXNzIEFwcCA8IFNpbmF0cmE6OkJhc2UKICAgIHNldCA6c2hvd19leGNlcHRpb25zLCBmYWxzZQogICAgc2V0IDpyYWlzZV9lcnJvcnMsIGZhbHNlCiAgICBzZXQgOnJvb3QsIEZpbGUuZGlybmFtZShfX0ZJTEVfXykKCiAgICByZWdpc3RlciBTaW5hdHJhOjpDb25maWdGaWxlCiAgICBjb25maWdfZmlsZSAnY29uZmlnL2FwcC55bWwnCgogICAgRGF0YU1hcHBlckhlbHBlci5zZXR1cChzZXR0aW5ncy5kYXRhYmFzZV91cmwpCiAgICBEYXRhTWFwcGVySGVscGVyLnNlZWRfaWZfZW1wdHkKCiAgICAjIGhvbWUKICAgIGdldCAnLycgZG8KICAgICAgZXJiIDppbmRleAogICAgZW5kCgogICAgIyBzdXJ2ZXlzCiAgICBnZXQgJy9zdXJ2ZXlzL3ZvaWNlJyBkbwogICAgICBzdXJ2ZXkgPSBTdXJ2ZXkuZmlyc3QKICAgICAgdHdpbWwgPSBUd2ltbEdlbmVyYXRvcgogICAgICAgICAgICAgIC5nZW5lcmF0ZV9mb3JfaW5jb21pbmdfY2FsbChzdXJ2ZXksIFJlcXVlc3RIZWxwZXIuYmFzZV91cmwocmVxdWVzdCkpCgogICAgICBjb250ZW50X3R5cGUgJ3RleHQveG1sJwogICAgICB0d2ltbAogICAgZW5kCgogICAgZ2V0ICcvc3VydmV5cy9zbXMnIGRvCiAgICAgIHR3aW1sID0gJycKICAgICAgb3JpZ2luID0gcmVxdWVzdC5jb29raWVzWydvcmlnaW4nXQogICAgICBxdWVzdGlvbl9pZCA9IHJlcXVlc3QuY29va2llc1sncXVlc3Rpb25faWQnXQogICAgICBpZiBmaXJzdF91c2VyX3Ntcz8KICAgICAgICBxdWVzdGlvbiA9IFF1ZXN0aW9uLmdldCgxKQogICAgICAgIGFkZF9xdWVzdGlvbl9pZF90b19jb29raWUocmVzcG9uc2UsIHF1ZXN0aW9uLmlkKQogICAgICAgIGFkZF9vcmlnaW5faWRfdG9fY29va2llKHBhcmFtc1s6U21zU2lkXSkKICAgICAgICB0d2ltbCA9IFR3aW1sR2VuZXJhdG9yLmdlbmVyYXRlX2Zvcl9zbXNfcXVlc3Rpb24ocXVlc3Rpb24sIGZpcnN0X3RpbWU6IHRydWUpCiAgICAgIGVsc2UKICAgICAgICBBbnN3ZXIuY3JlYXRlKAogICAgICAgICAgdXNlcl9pbnB1dDogcGFyYW1zWzpCb2R5XSwKICAgICAgICAgIG9yaWdpbjogb3JpZ2luLAogICAgICAgICAgZnJvbTogcGFyYW1zWzpGcm9tXSwKICAgICAgICAgIHF1ZXN0aW9uX2lkOiBxdWVzdGlvbl9pZC50b19pCiAgICAgICAgKQogICAgICAgIHF1ZXN0aW9uID0gUXVlc3Rpb24uZmluZF9uZXh0KHF1ZXN0aW9uX2lkLnRvX2kpCiAgICAgICAgbmV3X3F1ZXN0aW9uX2lkID0gcXVlc3Rpb24ubmlsPyA/IG5pbCA6IHF1ZXN0aW9uLmlkCiAgICAgICAgYWRkX3F1ZXN0aW9uX2lkX3RvX2Nvb2tpZShyZXNwb25zZSwgbmV3X3F1ZXN0aW9uX2lkKQogICAgICAgIHR3aW1sID0gVHdpbWxHZW5lcmF0b3IuZ2VuZXJhdGVfZm9yX3Ntc19xdWVzdGlvbihxdWVzdGlvbiwgZmlyc3RfdGltZTogZmFsc2UpCiAgICAgIGVuZAoKICAgICAgY29udGVudF90eXBlICd0ZXh0L3htbCcKICAgICAgdHdpbWwKICAgIGVuZAoKICAgIGdldCAnL3N1cnZleXMvcmVzdWx0cycgZG8KICAgICAgc3VydmV5ID0gU3VydmV5LmZpcnN0CiAgICAgIGNhbGxzID0gQW5zd2VyCiAgICAgICAgICAgICAgLmFsbChmaWVsZHM6IFs6aWQsIDpvcmlnaW5dLCB1bmlxdWU6IHRydWUsIG9yZGVyOiBuaWwpCiAgICAgICAgICAgICAgLm1hcCgmOm9yaWdpbikKICAgICAgICAgICAgICAudW5pcQoKICAgICAgYW5zd2Vyc19wZXJfY2FsbCA9IHt9CiAgICAgIGNhbGxzLmVhY2ggZG8gfG9yaWdpbnwKICAgICAgICBhbnN3ZXJzX3Blcl9jYWxsW29yaWdpbl0gPSBBbnN3ZXIuYWxsKG9yaWdpbjogb3JpZ2luKQogICAgICBlbmQKCiAgICAgIGVyYiA6cmVzdWx0cywgbG9jYWxzOiB7IGFuc3dlcnNfcGVyX2NhbGw6IGFuc3dlcnNfcGVyX2NhbGwsIHN1cnZleTogc3VydmV5IH0KICAgIGVuZAoKICAgICMgcXVlc3Rpb25zCiAgICBnZXQgJy9xdWVzdGlvbnMvOnF1ZXN0aW9uX2lkJyBkbwogICAgICBxdWVzdGlvbiA9IFF1ZXN0aW9uLmdldChwYXJhbXNbOnF1ZXN0aW9uX2lkXSkKICAgICAgdHdpbWwgPSBUd2ltbEdlbmVyYXRvci5nZW5lcmF0ZV9mb3Jfdm9pY2VfcXVlc3Rpb24ocXVlc3Rpb24pCgogICAgICBjb250ZW50X3R5cGUgJ3RleHQveG1sJwogICAgICB0d2ltbAogICAgZW5kCgogICAgIyBhbnN3ZXJzCiAgICBwb3N0ICcvcXVlc3Rpb25zLzpxdWVzdGlvbl9pZC9hbnN3ZXJzJyBkbwogICAgICBBbnN3ZXIuY3JlYXRlKAogICAgICAgIHJlY29yZGluZ191cmw6IHBhcmFtc1s6UmVjb3JkaW5nVXJsXSwKICAgICAgICB1c2VyX2lucHV0OiBwYXJhbXNbOkRpZ2l0c10sCiAgICAgICAgb3JpZ2luOiBwYXJhbXNbOkNhbGxTaWRdLAogICAgICAgIGZyb206IHBhcmFtc1s6RnJvbV0sCiAgICAgICAgcXVlc3Rpb25faWQ6IHBhcmFtc1s6cXVlc3Rpb25faWRdLnRvX2kKICAgICAgKQoKICAgICAgbmV4dF9xdWVzdGlvbiA9IFF1ZXN0aW9uLmZpbmRfbmV4dChwYXJhbXNbOnF1ZXN0aW9uX2lkXS50b19pKQogICAgICBpZiBuZXh0X3F1ZXN0aW9uLm5pbD8KICAgICAgICB0d2ltbCA9IFR3aW1sR2VuZXJhdG9yLmdlbmVyYXRlX2Zvcl9leGl0CiAgICAgIGVsc2UKICAgICAgICB0d2ltbCA9IFR3aW1sR2VuZXJhdG9yLmdlbmVyYXRlX2Zvcl92b2ljZV9xdWVzdGlvbihuZXh0X3F1ZXN0aW9uKQogICAgICBlbmQKCiAgICAgIGNvbnRlbnRfdHlwZSAndGV4dC94bWwnCiAgICAgIHR3aW1sCiAgICBlbmQKCiAgICBlcnJvciBkbwogICAgICAnQW4gYXBwbGljYXRpb24gZXJyb3IgaGFzIG9jdXJyZWQnCiAgICBlbmQKCiAgICBwcml2YXRlCgogICAgZGVmIGZpcnN0X3VzZXJfc21zPwogICAgICByZXF1ZXN0LmNvb2tpZXNbJ29yaWdpbiddLnRvX3MuZW1wdHk/IHx8CiAgICAgICAgcmVxdWVzdC5jb29raWVzWydxdWVzdGlvbl9pZCddLnRvX3MuZW1wdHk/CiAgICBlbmQKCiAgICBkZWYgYWRkX3F1ZXN0aW9uX2lkX3RvX2Nvb2tpZShyZXNwb25zZSwgcXVlc3Rpb25faWQpCiAgICAgIHJlc3BvbnNlLnNldF9jb29raWUgJ3F1ZXN0aW9uX2lkJywgdmFsdWU6IHF1ZXN0aW9uX2lkCiAgICBlbmQKCiAgICBkZWYgYWRkX29yaWdpbl9pZF90b19jb29raWUoc21zX3NpZCkKICAgICAgb3JpZ2luID0gRGlnZXN0OjpTSEExLmhleGRpZ2VzdChzbXNfc2lkKQogICAgICByZXNwb25zZS5zZXRfY29va2llICdvcmlnaW4nLCB2YWx1ZTogb3JpZ2luCiAgICBlbmQKICBlbmQKZW5kCg==</textarea>
 <textarea class="saurus-file" data-file="helpers/datamapper_helper.rb" data-mode="ruby">cmVxdWlyZSAnZGF0YV9tYXBwZXInCgpyZXF1aXJlX3JlbGF0aXZlICcuLi9tb2RlbHMvc3VydmV5JwpyZXF1aXJlX3JlbGF0aXZlICcuLi9tb2RlbHMvcXVlc3Rpb24nCnJlcXVpcmVfcmVsYXRpdmUgJy4uL21vZGVscy9hbnN3ZXInCgptb2R1bGUgRGF0YU1hcHBlckhlbHBlcgogIGRlZiBzZWxmLnNldHVwKGRhdGFiYXNlX3VybCkKICAgIERhdGFNYXBwZXIuc2V0dXAoOmRlZmF1bHQsIGRhdGFiYXNlX3VybCkKICAgIERhdGFNYXBwZXIuZmluYWxpemUKCiAgICAjIHRoaXMgc2VjdGlvbiBhdXRvbWF0aWNhbGx5IGNyZWF0ZXMgdGhlIHRhYmxlcwogICAgU3VydmV5LmF1dG9fdXBncmFkZSEKICAgIFF1ZXN0aW9uLmF1dG9fdXBncmFkZSEKICAgIEFuc3dlci5hdXRvX3VwZ3JhZGUhCiAgZW5kCgogIGRlZiBzZWxmLnNlZWRfaWZfZW1wdHkKICAgIGlmIFN1cnZleS5hbGwuY291bnQgPT0gMAogICAgICBzdXJ2ZXkgPSBTdXJ2ZXkuY3JlYXRlKHRpdGxlOiAnRGVmYXVsdCcpCgogICAgICBxdWVzdGlvbnMgPSBZQU1MLmxvYWRfZmlsZSgnY29uZmlnL3F1ZXN0aW9ucy55bWwnKQogICAgICBxdWVzdGlvbnMuZWFjaCBkbyB8cXwKICAgICAgICBzdXJ2ZXkucXVlc3Rpb25zLmNyZWF0ZShib2R5OiBxWydib2R5J10sIHF1ZXN0aW9uX3R5cGU6IHFbJ3F1ZXN0aW9uX3R5cGUnXSkKICAgICAgZW5kCgogICAgICBzdXJ2ZXkucXVlc3Rpb25zLnNhdmUKICAgIGVuZAogIGVuZAplbmQK</textarea>
 <textarea class="saurus-file" data-file="lib/twiml_generator.rb" data-mode="ruby">bW9kdWxlIFR3aW1sR2VuZXJhdG9yCiAgZGVmIHNlbGYuZ2VuZXJhdGVfZm9yX2luY29taW5nX2NhbGwoc3VydmV5LCBiYXNlX3VybCkKICAgIHdlbGNvbWVfbWVzc2FnZSA9ICJUaGFuayB5b3UgZm9yIHRha2luZyB0aGUgI3tzdXJ2ZXkudGl0bGV9IHN1cnZleSIKICAgIHJlZGlyZWN0X3VybCA9ICIje2Jhc2VfdXJsfS9xdWVzdGlvbnMvMSIKCiAgICBUd2lsaW86OlR3aU1MOjpSZXNwb25zZS5uZXcgZG8gfHJ8CiAgICAgIHIuU2F5IHdlbGNvbWVfbWVzc2FnZQogICAgICByLlJlZGlyZWN0IHJlZGlyZWN0X3VybCwgbWV0aG9kOiAnZ2V0JwogICAgZW5kLnRvX3htbAogIGVuZAoKICBkZWYgc2VsZi5nZW5lcmF0ZV9mb3Jfdm9pY2VfcXVlc3Rpb24ocXVlc3Rpb24pCiAgICBhY3Rpb25fdXJsID0gIi9xdWVzdGlvbnMvI3txdWVzdGlvbi5pZH0vYW5zd2VycyIKCiAgICBUd2lsaW86OlR3aU1MOjpSZXNwb25zZS5uZXcgZG8gfHJ8CiAgICAgIHIuU2F5IHF1ZXN0aW9uLmJvZHkKICAgICAgci5TYXkgUXVlc3Rpb25NZXNzYWdlcy5tZXNzYWdlX2ZvcihxdWVzdGlvbi5xdWVzdGlvbl90eXBlKQogICAgICBpZiBxdWVzdGlvbi52b2ljZT8KICAgICAgICByLlJlY29yZCBhY3Rpb246IGFjdGlvbl91cmwsIG1ldGhvZDogJ3Bvc3QnCiAgICAgIGVsc2UKICAgICAgICByLkdhdGhlciBhY3Rpb246IGFjdGlvbl91cmwsIG1ldGhvZDogJ3Bvc3QnCiAgICAgIGVuZAogICAgZW5kLnRvX3htbAogIGVuZAoKICBkZWYgc2VsZi5nZW5lcmF0ZV9mb3JfZXhpdAogICAgVHdpbGlvOjpUd2lNTDo6UmVzcG9uc2UubmV3IGRvIHxyfAogICAgICByLlNheSAnVGhhbmtzIGZvciB5b3VyIHRpbWUuIEdvb2QgYnllJwogICAgICByLkhhbmd1cAogICAgZW5kLnRvX3htbAogIGVuZAoKICBkZWYgc2VsZi5nZW5lcmF0ZV9mb3Jfc21zX3F1ZXN0aW9uKHF1ZXN0aW9uLCBoYXNoID0ge30pCiAgICBpZiBxdWVzdGlvbi5uaWw/CiAgICAgIHJldHVybiByZXNwb25kX3NtcygnVGhhbmsgeW91IGZvciB0YWtpbmcgdGhpcyBzdXJ2ZXkuIEdvb2RieWUhJykKICAgIGVuZAoKICAgIG1zZyA9ICcnCiAgICBtc2cgPDwgJ1RoYW5rIHlvdSBmb3IgdGFraW5nIG91ciBzdXJ2ZXkhJyBpZiBoYXNoWzpmaXJzdF90aW1lXQogICAgbXNnIDw8IHF1ZXN0aW9uLmJvZHkKICAgIG1zZyA8PCBRdWVzdGlvbk1lc3NhZ2VzLm1lc3NhZ2VfZm9yKDp5ZXNub19zbXMpIGlmIHF1ZXN0aW9uLnllc19ubz8KICAgIHJlc3BvbmRfc21zKG1zZykKICBlbmQKCiAgZGVmIHNlbGYucmVzcG9uZF9zbXMobWVzc2FnZSkKICAgIFR3aWxpbzo6VHdpTUw6OlJlc3BvbnNlLm5ldyBkbyB8cnwKICAgICAgci5NZXNzYWdlIG1lc3NhZ2UKICAgIGVuZC50b194bWwKICBlbmQKCiAgcHJpdmF0ZV9jbGFzc19tZXRob2QgOnJlc3BvbmRfc21zCgogIG1vZHVsZSBRdWVzdGlvbk1lc3NhZ2VzCiAgICBkZWYgc2VsZi5tZXNzYWdlX2Zvcih0eXBlKQogICAgICB7CiAgICAgICAgeWVzbm86ICdQbGVhc2UgcHJlc3MgdGhlIDEgZm9yIHllcyBhbmQgdGhlIDAgZm9yIG5vIGFuZCB0aGVuIGhpdCB0aGUgcG91bmQgc2lnbicsCiAgICAgICAgdm9pY2U6ICdQbGVhc2UgcmVjb3JkIHlvdXIgYW5zd2VyIGFmdGVyIHRoZSBiZWVwIGFuZCB0aGVuIGhpdCB0aGUgcG91bmQgc2lnbicsCiAgICAgICAgbnVtZXJpYzogJ1BsZWFzZSBwcmVzcyBhIG51bWJlciBiZXR3ZWVuIDAgYW5kIDkgYW5kIHRoZW4gaGl0IHRoZSBwb3VuZCBzaWduJywKICAgICAgICB5ZXNub19zbXM6ICIgVHlwZSAnMScgb3IgJzAnLiIKICAgICAgfS5mZXRjaCh0eXBlKQogICAgZW5kCiAgZW5kCmVuZAo=</textarea>
 </div>
