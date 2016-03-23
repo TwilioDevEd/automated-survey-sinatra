@@ -9,7 +9,7 @@
       which you can consult later using a survey results page.
       
       For the sake for simplicity this sample application take answers for a single 
-      survey and its questions which are loaded when it starts the first time
+      survey and its questions, which are loaded when it starts the first time
       
       Let's get started! 
       
@@ -57,7 +57,7 @@
 
       For this application, Twilio should be configured to make a GET request to
       the application's `/surveys/voice` endpoint. The controller then delegates the
-      TwiML generation to an abstraction called `TwimlGenerator`. You may find more 
+      TwiML generation to an abstraction called `TwimlGenerator`. You'll find more 
       about handling this voice request 
       [here](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/app.rb#L33-L40)
       
@@ -67,7 +67,7 @@
       to the first question using the [`Redirect`](https://www.twilio.com/docs/api/twiml/redirect).
       verb.
 
-      Next, we will handle the request made after the redirect.
+      Next, we'll handle the request made after the redirect.
 
       ---
 
@@ -100,7 +100,7 @@
       If the question
       is of kind `voice` then we use the
       [`Record`](https://www.twilio.com/docs/api/twiml/record)
-      verb. However, if we expect dialpad input we use the the
+      verb. However, if we expect dialpad input, we use the the
       [`Gather`](https://www.twilio.com/docs/api/twiml/gather)
       verb. Both verbs take an `action` attribute and a `method`
       attribute. Twilio will use both attributes to make a
@@ -108,7 +108,7 @@
       
       Since we want to create a new resource in our server, the HTTP
       method will be `POST` for both `Gather` and `Record` and
-      `action` URL will be `/questions/:question_id/answers`.
+      `action` URL will be like `/questions/:question_id/answers`.
       
 
   .step(data-title="Persist a Question's Answer", 
@@ -128,7 +128,7 @@
       `yes-no/numeric` answers accordingly. The app also
       save the `CallSid` so we can uniquely identify the `origin` of the call.
 
-      As most surveys include more than a single question the app should
+      As most surveys include more than a single question, the app should
       [redirect the user to the next question](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/lib/twiml_generator.rb#L12-L24) 
       using the [Redirect](https://www.twilio.com/docs/api/twiml/redirect) verb
       again.
@@ -149,16 +149,16 @@
       how to do it with SMS.
       
       Now, while taking a survey in a phone call, you don't have troubles to identify
-      every answer `origin` because the app uses the `CallSid` parameter for that purpose
-      If you try to replicate that behaviour using SMSs, with `SmsSid` which is the counterpart
-      of `CallSid`, you end up having a different `origin` for every answer, because
+      every answer `origin` because the app uses the `CallSid` parameter for that purpose.
+      If you try to replicate that behaviour using SMSs, you'd use `SmsSid`, which is the counterpart
+      of `CallSid`.Then, you end up having a different `origin` for every answer, because
       every message has a unique `SmsSid`. 
       
       So, in order to keep track of the conversation
       required to complete the survey questions, we'll use 
       [Twilio cookies](//www.twilio.com/help/faq/twilio-basics/how-do-twilio-cookies-work).
-      That way we could add a unique identifier to the conversation, which allow us to save the 
-      answer `origin` properly. The same approach will be used to deliver the next
+      That way we could add a unique identifier to the conversation, which allow us to save every  
+      answer's `origin` properly. The same approach will be used to deliver the next
       `question_id` in the subsequent requests.
       
       ---
@@ -183,12 +183,11 @@
       
       In the other hand, If the SMS comes with the `origin` and `question_id` cookies, 
       it means it's part of a conversation, therefore it contains answer to the referred question. 
+      
       The application then processes the body content, uses it to persists a new answer
       and finally delivers TwiML instructions to send the next question to the
       survey taker.
       
-      Finally, 
-
   .step(data-title="Delivering Questions using the SMS Channel", 
         data-file='lib/twiml_generator.rb',
         data-highlight='33-43')
@@ -203,9 +202,9 @@
       
       If the `first_time` hash argument is true, then it means it's the first 
       message of the conversation and it will include a welcome message and the 
-      first question text.
+      first question's text.
       
-      The rest of the cases it will just respond with the current question text.
+      For the rest of the cases it will just respond with the current question text.
 
 
   .step(data-file='app.rb',
