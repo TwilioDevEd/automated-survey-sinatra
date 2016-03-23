@@ -57,7 +57,7 @@ module AutomatedSurvey
         )
         question = Question.find_next(question_id.to_i)
         new_question_id = question.nil? ? nil : question.id
-        response.set_cookie 'question_id', value: new_question_id
+        add_question_id_to_cookie(response, new_question_id)
         twiml = TwimlGenerator.generate_for_sms_question(question, first_time: false)
       end
 
