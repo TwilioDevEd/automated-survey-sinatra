@@ -1,0 +1,6 @@
+{
+    "title": "Automated Surveys in Sinatra",
+    "repo": "TwilioDevEd/automated-survey-sinatra",
+    "description": "Learn to implement automated surveys in your Sinatra web app with Twilio.",
+    "heroku": false
+}
