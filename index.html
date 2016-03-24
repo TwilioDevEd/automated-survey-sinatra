@@ -20,9 +20,9 @@ survey and its questions, which are loaded when it starts the first time</p>
 <hr>
 <p><strong>See Also</strong></p>
 <ul>
-<li><a href="//www.twilio.com/docs/quickstart/ruby">The Twilio Java Help er Library</a></li>
+<li><a href="//www.twilio.com/docs/quickstart/ruby">Twilio Ruby Helper Library</a></li>
 <li><a href="//www.twilio.com/docs/quickstart/ruby/twiml">TwiML: Ruby Quickstart Tutorial</a></li>
-<li><a href="//www.twilio.com/docs/api/twiml">TwiML: the Twilio Markup Language</a></li>
+<li><a href="//www.twilio.com/docs/api/twiml">TwiML: Twilio Markup Language</a></li>
 <li><a href="//www.sinatrarb.com/intro.html">Getting started with Sinatra</a></li>
 <li><a href="http://datamapper.org/">DataMapper ORM</a></li>
 <li><a href="//www.sinatrarb.com/contrib/config_file.html#label-Modular+Application">Sinatra configuration files</a></li>
@@ -46,7 +46,7 @@ or POST).</p>
 <p>For this application, Twilio should be configured to make a GET request to
 the application&#39;s <code>/surveys/voice</code> endpoint. The controller then delegates the
 TwiML generation to an abstraction called <code>TwimlGenerator</code>. You&#39;ll find more 
-about handling this voice request 
+details about handling this voice request 
 <a href="//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/app.rb#L33-L40">here</a></p>
 <p>The <code>TwimlGenerator</code> abstraction will look for our only survey, and after stating 
 its name and welcoming the user using TwiML&#39;s
@@ -57,9 +57,9 @@ verb.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>
+<li><a href="https://www.twilio.com/platform/webhooks">Twilio Webhooks</a></li>
+<li><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">HTTP Methods</a></li>
 <li><a href="https://www.twilio.com/docs/api/twiml/redirect">TwiMLTM Voice: Redirect</a></li>
-<li><a href="https://www.twilio.com/platform/webhooks">Twilio webhooks</a></li>
-<li><a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">HTTP methods</a></li>
 <li><a href="https://www.twilio.com/docs/api/twiml/your_response">TwiML Voice: Your Response</a></li>
 <li><a href="https://www.twilio.com/docs/api/twiml/say">TwiML Voice: Say</a></li>
 <li><a href="https://www.twilio.com/docs/api/twiml/redirect">TwiML Voice: Redirect</a></li>
@@ -116,8 +116,10 @@ every message has a unique <code>SmsSid</code>. </p>
 <p>So, in order to keep track of the conversation
 required to complete the survey questions, we&#39;ll use 
 <a href="//www.twilio.com/help/faq/twilio-basics/how-do-twilio-cookies-work">Twilio cookies</a>.
-That way we could add a unique identifier to the conversation, which allow us to save every<br>answer&#39;s <code>origin</code> properly. The same approach will be used to deliver the next
-<code>question_id</code> in the subsequent requests.</p>
+Then we could add a unique identifier to the conversation, which will be
+received in every Twilio SMS request with the same <code>to/from</code> phone numbers. 
+Allowing us, that way, to save every answer&#39;s <code>origin</code> properly. The same approach 
+will be used to deliver the next <code>question_id</code> in the subsequent requests.</p>
 <hr>
 <p><strong>See Also:</strong></p>
 <ul>

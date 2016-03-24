@@ -17,9 +17,9 @@
 
       **See Also**
 
-      * [The Twilio Java Help er Library](//www.twilio.com/docs/quickstart/ruby)
+      * [Twilio Ruby Helper Library](//www.twilio.com/docs/quickstart/ruby)
       * [TwiML: Ruby Quickstart Tutorial](//www.twilio.com/docs/quickstart/ruby/twiml)
-      * [TwiML: the Twilio Markup Language](//www.twilio.com/docs/api/twiml)
+      * [TwiML: Twilio Markup Language](//www.twilio.com/docs/api/twiml)
       * [Getting started with Sinatra](//www.sinatrarb.com/intro.html)
       * [DataMapper ORM](http://datamapper.org/)
       * [Sinatra configuration files](//www.sinatrarb.com/contrib/config_file.html#label-Modular+Application)
@@ -58,7 +58,7 @@
       For this application, Twilio should be configured to make a GET request to
       the application's `/surveys/voice` endpoint. The controller then delegates the
       TwiML generation to an abstraction called `TwimlGenerator`. You'll find more 
-      about handling this voice request 
+      details about handling this voice request 
       [here](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/app.rb#L33-L40)
       
       The `TwimlGenerator` abstraction will look for our only survey, and after stating 
@@ -72,9 +72,9 @@
       ---
 
       **See Also:**
+      * [Twilio Webhooks](https://www.twilio.com/platform/webhooks)
+      * [HTTP Methods](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
       * [TwiMLTM Voice: Redirect](https://www.twilio.com/docs/api/twiml/redirect)
-      * [Twilio webhooks](https://www.twilio.com/platform/webhooks)
-      * [HTTP methods](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
       * [TwiML Voice: Your Response](https://www.twilio.com/docs/api/twiml/your_response)
       * [TwiML Voice: Say](https://www.twilio.com/docs/api/twiml/say)
       * [TwiML Voice: Redirect](https://www.twilio.com/docs/api/twiml/redirect)
@@ -157,9 +157,10 @@
       So, in order to keep track of the conversation
       required to complete the survey questions, we'll use 
       [Twilio cookies](//www.twilio.com/help/faq/twilio-basics/how-do-twilio-cookies-work).
-      That way we could add a unique identifier to the conversation, which allow us to save every  
-      answer's `origin` properly. The same approach will be used to deliver the next
-      `question_id` in the subsequent requests.
+      Then we could add a unique identifier to the conversation, which will be
+      received in every Twilio SMS request with the same `to/from` phone numbers. 
+      Allowing us, that way, to save every answer's `origin` properly. The same approach 
+      will be used to deliver the next `question_id` in the subsequent requests.
       
       ---
 
