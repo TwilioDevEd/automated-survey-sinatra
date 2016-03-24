@@ -30,6 +30,7 @@ Use Twilio to conduct automated phone surveys.
    ```
 
 1. Make sure the tests succeed
+
    ```bash
    $ bundle exec rspec
    ```
