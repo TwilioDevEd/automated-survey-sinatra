@@ -3,16 +3,16 @@
     :markdown
       ## About This Application
 
-      This [Sinatra](//www.sinatrarb.com/) web application performs automated 
-      surveys using Twilio's voice/sms API and TwiML. Survey takers will interact 
+      This [Sinatra](//www.sinatrarb.com/) web application performs automated
+      surveys using Twilio's voice/sms API and TwiML. Survey takers will interact
       with the application through the phone, allowing it to persist the answers
       which you can consult later using a survey results page.
-      
-      For the sake for simplicity this sample application take answers for a single 
-      survey and its questions, which are loaded when it starts the first time
-      
-      Let's get started! 
-      
+
+      For the sake of simplicity this application takes questions and answers
+      for a single survey. They are loaded when it starts the first time.
+
+      Let's get started!
+
       ---
 
       **See Also**
@@ -23,51 +23,50 @@
       * [Getting started with Sinatra](//www.sinatrarb.com/intro.html)
       * [DataMapper ORM](http://datamapper.org/)
       * [Sinatra configuration files](//www.sinatrarb.com/contrib/config_file.html#label-Modular+Application)
-          
-  .step(data-title='Preparing Survey', 
-        data-file='helpers/datamapper_helper.rb', 
+
+  .step(data-title='Preparing Survey',
+        data-file='helpers/datamapper_helper.rb',
         data-highlight='18-29')
     :markdown
       ## Preparing Surveys
 
-      In order to perform automated surveys we first need to have some
-      questions to ask. For your convenience, the application's
-      repository already includes one survey that is loaded automatically into
-      the database the first time the app starts if this is configured properly.
+      In order to perform automated surveys we first need to have
+      questions to ask. If the application is configured properly, then a survey
+      (found on the app's repository) will be loaded automatically into
+      the database for your convenience.
 
-      You can modify the questions from the survey by cleaning the database, 
+      You can modify the questions from the survey by cleaning the database,
       editing the [`config/questions.yml`](//github.com/TwilioDevEd/automated-survey-sinatra/blob/master/config/questions.yml)
-      file and re-running the app.
+      file and then re-running the app.
 
-      We want users to take our survey, so next we are going implement
-      the interaction of the caller with the application.
-      
-      
-  .step(data-title="Respond to Twilio's Voice Request", 
+      Now we are going implement the interaction of the caller with the
+      application, so that users are able to take our survey.
+
+
+  .step(data-title="Respond to Twilio's Voice Request",
         data-file='lib/twiml_generator.rb',
         data-highlight='2-10')
     :markdown
       ## Respond to Twilio's Voice Request
 
-      Whenever one of [your Twilio phone
-      numbers](//www.twilio.com/user/account/phone-numbers/incoming)
+      Whenever one of [your Twilio phone numbers](//www.twilio.com/user/account/phone-numbers/incoming)
       receives a call, Twilio will make an HTTP request to the voice request
       URL configured under it with the HTTP method specified (either GET
       or POST).
 
-      For this application, Twilio should be configured to make a GET request to
+      For this application, Twilio should be configured to make a GET requests to
       the application's `/surveys/voice` endpoint. The controller then delegates the
-      TwiML generation to an abstraction called `TwimlGenerator`. You'll find more 
-      details about handling this voice request 
+      TwiML generation to an abstraction called `TwimlGenerator`. You'll find more
+      details about how to handle this voice request
       [here](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/app.rb#L33-L40)
-      
-      The `TwimlGenerator` abstraction will look for our only survey, and after stating 
-      its name and welcoming the user using TwiML's
-      [`Say`](https://www.twilio.com/docs/api/twiml/say) verb, it will redirect the call
+
+      The `TwimlGenerator` abstraction will look for our only survey. It will then state
+      its name and welcome the user using TwiML's
+      [`Say`](https://www.twilio.com/docs/api/twiml/say) verb. The call will be then redirected
       to the first question using the [`Redirect`](https://www.twilio.com/docs/api/twiml/redirect).
       verb.
 
-      Next, we'll handle the request made after the redirect.
+      On this next step we'll handle the request made after the redirect.
 
       ---
 
@@ -78,40 +77,39 @@
       * [TwiML Voice: Your Response](https://www.twilio.com/docs/api/twiml/your_response)
       * [TwiML Voice: Say](https://www.twilio.com/docs/api/twiml/say)
       * [TwiML Voice: Redirect](https://www.twilio.com/docs/api/twiml/redirect)
-      
-  
-  .step(data-title="Ask the Caller a Question", 
+
+
+  .step(data-title="Ask the Caller a Question",
         data-file='lib/twiml_generator.rb',
         data-highlight='12-24')
     :markdown
       ## Ask the Caller a Question
-      
-      In the previous step we redirected our client's call to another endpoint, 
-      which [handles the request](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/app.rb#L84-L90) 
-      and returns further instructions to deliver a question, the first one in this case,
-      using TwiML.
-       
+
+      In the previous step we redirected our client's call to another endpoint
+      that, [handles the request](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/app.rb#L84-L90)
+      and returns further instructions to deliver a question. The first question is
+      returned using TwiML.
+
       First we will deliver the question and then the
-      instructions to answer it, which depend on the
-      type of question we ask. In both cases the app use the 
-      [`Say`](https://www.twilio.com/docs/api/twiml/say) verb. 
-      
-      Finally, the app records the caller's answer to the question.
-      If the question
-      is of kind `voice` then we use the
+      instructions to answer it. These depend on the
+      type of question we ask. In both cases the app uses the
+      [`Say`](https://www.twilio.com/docs/api/twiml/say) verb.
+
+      Finally the app records the caller's answer to the question.
+      If the question is of `voice` kind then we use the
       [`Record`](https://www.twilio.com/docs/api/twiml/record)
-      verb. However, if we expect dialpad input, we use the the
+      verb. However, if we expect dialpad input, we use the
       [`Gather`](https://www.twilio.com/docs/api/twiml/gather)
       verb. Both verbs take an `action` attribute and a `method`
       attribute. Twilio will use both attributes to make a
-      request we can use to store the caller's answer to the question.
-      
+      request that we can use to store the caller's answer to the question.
+
       Since we want to create a new resource in our server, the HTTP
       method will be `POST` for both `Gather` and `Record` and
       `action` URL will be like `/questions/:question_id/answers`.
-      
 
-  .step(data-title="Persist a Question's Answer", 
+
+  .step(data-title="Persist a Question's Answer",
         data-file='app.rb',
         data-highlight='93-111')
     :markdown
@@ -126,48 +124,47 @@
       with every request. For this sample application we will store
       the `RecordingUrl` or `Digits` parameter for voice and
       `yes-no/numeric` answers accordingly. The app also
-      save the `CallSid` so we can uniquely identify the `origin` of the call.
+      saves the `CallSid` so we can uniquely identify the `origin` of the call.
 
       As most surveys include more than a single question, the app should
-      [redirect the user to the next question](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/lib/twiml_generator.rb#L12-L24) 
+      [redirect the user to the next question](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/lib/twiml_generator.rb#L12-L24)
       using the [Redirect](https://www.twilio.com/docs/api/twiml/redirect) verb
       again.
 
-      If there are no more questions available in the survey, 
+      If there are no more questions available in the survey,
       [the user will be notified](//github.com/TwilioDevEd/automated-survey-sinatra/blob/552af634e29886365f9cd5340efd663ef6b553a3/lib/twiml_generator.rb#L26-L31) that the surveys has finalized using the
-      [`Say`](https://www.twilio.com/docs/api/twiml/say) verb and dropping the call 
+      [`Say`](https://www.twilio.com/docs/api/twiml/say) verb and dropping the call
       using the [`Hangup`](https://www.twilio.com/docs/api/twiml/hangup) verb.
-      
-      Next, lets se how to handle SMS driven surveys.
 
-  .step(data-title="Identifying Survey's SMS Threads", 
+      Next lets see how to handle SMS driven surveys.
+
+  .step(data-title="Identifying Survey's SMS Threads",
         data-file='app.rb')
     :markdown
       ## Identifying Survey's SMS Threads
 
-      We just saw how to handle surveys over voice calls, it's time to introduce 
+      We just saw how to handle surveys over voice calls, it's time to introduce
       how to do it with SMS.
-      
-      Now, while taking a survey in a phone call, you don't have troubles to identify
-      every answer `origin` because the app uses the `CallSid` parameter for that purpose.
+
+      While taking a survey during a phone call, you don't have trouble to identify
+      every answer's `origin` because the app uses the `CallSid` parameter for that purpose.
       If you try to replicate that behaviour using SMSs, you'd use `SmsSid`, which is the counterpart
-      of `CallSid`.Then, you end up having a different `origin` for every answer, because
-      every message has a unique `SmsSid`. 
-      
-      So, in order to keep track of the conversation
-      required to complete the survey questions, we'll use 
-      [Twilio cookies](//www.twilio.com/help/faq/twilio-basics/how-do-twilio-cookies-work).
+      of `CallSid`. What happens is that you end up having a different `origin` for every answer,
+      because every message has a unique `SmsSid`.
+
+      In order to keep track of the conversation required to complete the survey questions,
+      we'll use [Twilio cookies](//www.twilio.com/help/faq/twilio-basics/how-do-twilio-cookies-work).
       Then we could add a unique identifier to the conversation, which will be
-      received in every Twilio SMS request with the same `to/from` phone numbers. 
-      Allowing us, that way, to save every answer's `origin` properly. The same approach 
+      received in every Twilio SMS request with the same `to/from` phone numbers.
+      This allows us to save every answer's `origin` properly. The same approach
       will be used to deliver the next `question_id` in the subsequent requests.
-      
+
       ---
 
       **See Also:**
       * [Tracking SMS conversations with Twilio Cookies](//www.twilio.com/blog/2014/07/the-definitive-guide-to-sms-conversation-tracking.html)
 
-  .step(data-title="Respond to Twilio's SMS Request", 
+  .step(data-title="Respond to Twilio's SMS Request",
         data-file='app.rb',
         data-highlight='42-66, 119-131')
     :markdown
@@ -175,37 +172,39 @@
 
       Once we receive an SMS in our Twilio phone number, Twilio will make an HTTP
       GET request to the application's SMS endpoint `/surveys/sms`.
-      
+
       If there is no record of a previous SMS conversation, which indicates this is
-      the first SMS, we add cookies indicating the conversation identifier: `origin` 
+      the first SMS, we add cookies indicating the conversation identifier: `origin`
       and the next question: `question_id`. Then using the `TwimlGenerator` `generate_for_sms_question`
-      method, the application delivers TwiML instructions to send the first question 
+      method, the application delivers TwiML instructions to send the first question
       to the survey taker.
-      
-      In the other hand, If the SMS comes with the `origin` and `question_id` cookies, 
-      it means it's part of a conversation, therefore it contains answer to the referred question. 
-      
+
+      If the SMS comes with the `origin` and `question_id` cookies, it means that the SMS is
+      part of a conversation, therefore it contains an answer to the referred question.
+
       The application then processes the body content, uses it to persists a new answer
       and finally delivers TwiML instructions to send the next question to the
       survey taker.
-      
-  .step(data-title="Delivering Questions using the SMS Channel", 
+
+  .step(data-title="Delivering Questions using the SMS Channel",
         data-file='lib/twiml_generator.rb',
         data-highlight='33-43')
     :markdown
       ## Delivering Questions using SMS Channel
 
-      Here the application creates the TwiML for responding to every survey taker SMS.
-      For this purpose we'll use the [`Message`](https://www.twilio.com/docs/api/twiml/sms/message) verb every single time.
-      
-      If the method receives a `nil` value for the `question` argument, it means 
-      the survey has ended and it will respond with a farewell grateful message.
-      
-      If the `first_time` hash argument is true, then it means it's the first 
-      message of the conversation and it will include a welcome message and the 
-      first question's text.
-      
-      For the rest of the cases it will just respond with the current question text.
+      Here the application creates the TwiML necessary for responding to every incoming
+      SMS from survey taker.
+      For this purpose we'll use the [`Message`](https://www.twilio.com/docs/api/twiml/sms/message)
+      verb every single time.
+
+      If the method receives a `nil` value for the `question` argument, it means
+      the survey has ended and it will respond with a grateful farewell message.
+
+      If it's the `first_time` the hash argument is true, then it means it's the first
+      message of the conversation. It will include a welcome message and the text of
+      the first question.
+
+      For the rest of the cases it will just respond with the text of the current question.
 
 
   .step(data-file='app.rb',
@@ -213,13 +212,13 @@
     :markdown
       ## Display the survey results
 
-      For this endpoint we simply query the database using 
+      For this endpoint we simply query the database using
       [data_mapper finder methods](//datamapper.org/docs/find.html)
       and then display the information within an ERB template. We
-      display a panel for every question on the last survey, and
+      display a panel for every question on the survey, and
       inside every panel we list the responses from different calls.
 
-      You can access this page in the applications root route `/surveys/results`.
+      You can access this page in the application's root route `/surveys/results`.
 
       ---
 
@@ -229,11 +228,13 @@
   .step
     :markdown
       ## Where to next?
-      
-      That's it! We have just implemented automated surveys using Ruby and Sinatra.
+
+      That's it!
+
+      We have just implemented automated surveys using Ruby and Sinatra.
       You should be able to take the survey and see the results under the root route of
-      the application. 
-      
+      the application.
+
       If you're a Ruby developer working with Twilio, you might also enjoy these
       tutorials:
 
@@ -244,8 +245,7 @@
       [**ETA-Notifications**](//www.twilio.com/docs/tutorials/walkthrough/eta-notifications/ruby/rails)
 
       Learn how to implement ETA Notifications using Ruby on Rails and Twilio.
-      
+
       Thanks for checking out this tutorial! If you have any feedback
       to share with us, we'd love to hear it.
       [Contact support](//www.twilio.com/help/contact) to let us know what you think.
-      
