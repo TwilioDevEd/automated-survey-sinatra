@@ -80,7 +80,3 @@ That's it!
 * No warranty expressed or implied. Software is as is. Diggity.
 * [MIT License](http://www.opensource.org/licenses/mit-license.html)
 * Lovingly crafted by Twilio Developer Education.
-
-<a href="http://twilio.com/signal">![](https://s3.amazonaws.com/baugues/signal-logo.png)</a>
-
-Join us in San Francisco May 24-25th to [learn best practices from the engineers who create the Twilio stack](https://www.twilio.com/signal).
