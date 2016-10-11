@@ -2,9 +2,12 @@
 
 [![Build Status](https://travis-ci.org/TwilioDevEd/automated-survey-sinatra.svg?branch=master)](https://travis-ci.org/TwilioDevEd/automated-survey-sinatra)
 
-Use Twilio to conduct automated phone surveys.
+Follow along with this simple tutorial to see the code necessary to implement
+automated surveys that integrate directly with your CRM and customer database.
 
-## Run the application
+[Read the full tutorial here!](https://www.twilio.com/docs/tutorials/walkthrough/automated-survey/ruby/sinatra)
+
+## Local development
 
 1. Clone the repository and `cd` into it
 
@@ -21,8 +24,8 @@ Use Twilio to conduct automated phone surveys.
 
 1. Create development and test databases
 
-   _Make sure you have installed [PostgreSQL](http://www.postgresql.org/). If on
-   a Mac, I recommend [Postgres.app](http://postgresapp.com)_.
+   Make sure you have installed [PostgreSQL](http://www.postgresql.org/). If on
+   a Mac, I recommend [Postgres.app](http://postgresapp.com).
 
    ```bash
    $ createdb automated_survey_sinatra
@@ -52,28 +55,33 @@ Use Twilio to conduct automated phone surveys.
   ```
 
   Once ngrok is running, open up your browser and go to your ngrok URL. It will
-  look something like this: `http://9a159ccf.ngrok.io`
+  look something like this: `http://<ngrok-subdomain>.ngrok.io`.
 
   You can read [this blog post](https://www.twilio.com/blog/2015/09/6-awesome-reasons-to-use-ngrok-when-testing-webhooks.html)
   for more details on how to use ngrok.
 
-1. Configure Twilio to call your webhooks
+1. Configure Twilio to call your webhooks.
 
-  You will also need to configure Twilio to call your application when calls are received on your **Twilio Number**. The Voice url should look something like this:
+  You will also need to configure Twilio to call your application when calls are
+  received on your **Twilio Number**. The Voice url should look something like
+  this:
 
   ```
-  http://9a159ccf.ngrok.io/conference/surveys/voice
+  http://<ngrok-subdomain>.ngrok.io/surveys/voice
   ```
 
   And the SMS one like this:
 
   ```
-  http://9a159ccf.ngrok.io/conference/surveys/sms
+  http://<ngrok-subdomain>/surveys/sms
   ```
 
   ![Configure Voice](http://howtodocs.s3.amazonaws.com/twilio-number-config-all-med.gif)
 
-That's it!
+## How to Demo?
+
+- _Voice Survey_ — Call your Twilio number and follow the instructions.
+- _Voice Survey_ — Text your Twilio number with any text and follow the instructions.
 
 ## Meta
 
