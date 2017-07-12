@@ -6,7 +6,7 @@ gem 'dm-postgres-adapter'
 gem 'pg'
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'twilio-ruby', '~> 5.0.0.rc22'
+gem 'twilio-ruby', '~> 5.0.0.rc26'
 
 group :test, :development do
   gem 'rspec'

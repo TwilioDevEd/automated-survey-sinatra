@@ -7,7 +7,7 @@ module TwimlGenerator
     response.say welcome_message
     response.redirect redirect_url, method: 'get'
 
-    response.to_xml_str
+    response.to_s
   end
 
   def self.generate_for_voice_question(question)
@@ -22,7 +22,7 @@ module TwimlGenerator
       response.gather action: action_url, method: 'post'
     end
 
-    response.to_xml_str
+    response.to_s
   end
 
   def self.generate_for_exit
@@ -30,7 +30,7 @@ module TwimlGenerator
     response.say 'Thanks for your time. Good bye'
     response.hangup
 
-    response.to_xml_str
+    response.to_s
   end
 
   def self.generate_for_sms_question(question, hash = {})
@@ -49,7 +49,7 @@ module TwimlGenerator
     response = Twilio::TwiML::MessagingResponse.new
     response.message message
 
-    response.to_xml_str
+    response.to_s
   end
 
   private_class_method :respond_sms
