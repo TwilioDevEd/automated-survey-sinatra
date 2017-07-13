@@ -1,20 +1,20 @@
 source 'https://rubygems.org'
 
-gem 'sinatra'
-gem 'sinatra-contrib'
-gem 'twilio-ruby'
-gem 'pg'
+gem 'bcrypt'
 gem 'data_mapper'
 gem 'dm-postgres-adapter'
-gem 'bcrypt'
+gem 'pg'
+gem 'sinatra'
+gem 'sinatra-contrib'
+gem 'twilio-ruby', '>= 5.0.0'
 
 group :test, :development do
   gem 'rspec'
 end
 
 group :test do
-  gem 'rake'
-  gem 'rack-test'
   gem 'database_cleaner'
   gem 'nokogiri'
+  gem 'rack-test'
+  gem 'rake'
 end

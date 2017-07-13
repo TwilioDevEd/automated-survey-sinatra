@@ -3,31 +3,34 @@ module TwimlGenerator
     welcome_message = "Thank you for taking the #{survey.title} survey"
     redirect_url = "#{base_url}/questions/1"
 
-    Twilio::TwiML::Response.new do |r|
-      r.Say welcome_message
-      r.Redirect redirect_url, method: 'get'
-    end.to_xml
+    response = Twilio::TwiML::VoiceResponse.new
+    response.say welcome_message
+    response.redirect redirect_url, method: 'get'
+
+    response.to_s
   end
 
   def self.generate_for_voice_question(question)
     action_url = "/questions/#{question.id}/answers"
 
-    Twilio::TwiML::Response.new do |r|
-      r.Say question.body
-      r.Say QuestionMessages.message_for(question.question_type)
-      if question.voice?
-        r.Record action: action_url, method: 'post'
-      else
-        r.Gather action: action_url, method: 'post'
-      end
-    end.to_xml
+    response = Twilio::TwiML::VoiceResponse.new
+    response.say question.body
+    response.say QuestionMessages.message_for(question.question_type)
+    if question.voice?
+      response.record action: action_url, method: 'post'
+    else
+      response.gather action: action_url, method: 'post'
+    end
+
+    response.to_s
   end
 
   def self.generate_for_exit
-    Twilio::TwiML::Response.new do |r|
-      r.Say 'Thanks for your time. Good bye'
-      r.Hangup
-    end.to_xml
+    response = Twilio::TwiML::VoiceResponse.new
+    response.say 'Thanks for your time. Good bye'
+    response.hangup
+
+    response.to_s
   end
 
   def self.generate_for_sms_question(question, hash = {})
@@ -43,9 +46,10 @@ module TwimlGenerator
   end
 
   def self.respond_sms(message)
-    Twilio::TwiML::Response.new do |r|
-      r.Message message
-    end.to_xml
+    response = Twilio::TwiML::MessagingResponse.new
+    response.message message
+
+    response.to_s
   end
 
   private_class_method :respond_sms

@@ -1,13 +1,10 @@
 language: ruby
 rvm:
   - rvm 2.2.1
-  - rvm 2.2.2
+  - rvm 2.3.1
 
 before_install:
   - sudo apt-get install postgresql-server-dev-9.1 libpq-dev
 
 before_script:
   - psql -c 'create database automated_survey_sinatra_test;' -U postgres
-
-install:
-  - bundle
