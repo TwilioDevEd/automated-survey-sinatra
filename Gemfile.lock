@@ -1,9 +1,10 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.4.0)
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
     backports (3.6.8)
-    bcrypt (3.1.11)
+    bcrypt (3.1.16)
     bcrypt-ruby (3.1.5)
       bcrypt (>= 3.1.3)
     data_mapper (1.2.0)
@@ -59,16 +60,17 @@ GEM
     faraday (0.12.1)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
-    json (1.8.3)
-    json_pure (1.8.3)
+    json (1.8.6)
+    json_pure (1.8.6)
     jwt (1.5.6)
     libxml-ruby (3.0.0)
     mini_portile2 (2.0.0)
-    multi_json (1.11.2)
+    multi_json (1.15.0)
     multipart-post (2.0.0)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     pg (0.18.4)
+    public_suffix (4.0.6)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -105,16 +107,16 @@ GEM
       faraday (~> 0.9)
       jwt (~> 1.5)
       libxml-ruby (= 3.0.0)
-    uuidtools (2.1.5)
+    uuidtools (2.2.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   bcrypt
-  data_mapper
+  data_mapper (>= 1.2.0)
   database_cleaner
-  dm-postgres-adapter
+  dm-postgres-adapter (>= 1.2.0)
   nokogiri
   pg
   rack-test
@@ -125,4 +127,4 @@ DEPENDENCIES
   twilio-ruby (>= 5.0.0)
 
 BUNDLED WITH
-   1.15.1
+   1.17.3
