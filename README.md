@@ -80,7 +80,8 @@ automated surveys that integrate directly with your CRM and customer database.
   http://<ngrok-subdomain>/surveys/sms
   ```
 
-  ![Configure Voice](http://howtodocs.s3.amazonaws.com/twilio-number-config-all-med.gif)
+   [Learn how to configure a Twilio phone number for Programmable Voice](https://www.twilio.com/docs/voice/tutorials/how-to-respond-to-incoming-phone-calls-python#buy-and-configure-a-phone-number)
+   [Learn how to configure a Twilio phone number for Programmable SMS](https://support.twilio.com/hc/en-us/articles/223136047-Configure-a-Twilio-Phone-Number-to-Receive-and-Respond-to-Messages)
 
 ## How to Demo?
 
