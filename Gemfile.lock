@@ -2,7 +2,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.4.0)
-    backports (3.6.8)
     bcrypt (3.1.11)
     bcrypt-ruby (3.1.5)
       bcrypt (>= 3.1.3)
@@ -64,16 +63,18 @@ GEM
     jwt (1.5.6)
     libxml-ruby (3.0.0)
     mini_portile2 (2.0.0)
-    multi_json (1.11.2)
+    multi_json (1.15.0)
     multipart-post (2.0.0)
+    mustermann (3.0.0)
+      ruby2_keywords (~> 0.0.1)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     pg (0.18.4)
-    rack (1.6.4)
-    rack-protection (1.5.3)
+    rack (2.2.4)
+    rack-protection (3.0.2)
       rack
-    rack-test (0.6.3)
-      rack (>= 1.0)
+    rack-test (2.0.2)
+      rack (>= 1.3)
     rake (11.1.1)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -88,19 +89,20 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
-    sinatra (1.4.7)
-      rack (~> 1.5)
-      rack-protection (~> 1.4)
-      tilt (>= 1.3, < 3)
-    sinatra-contrib (1.4.6)
-      backports (>= 2.0)
+    ruby2_keywords (0.0.5)
+    sinatra (3.0.2)
+      mustermann (~> 3.0)
+      rack (~> 2.2, >= 2.2.4)
+      rack-protection (= 3.0.2)
+      tilt (~> 2.0)
+    sinatra-contrib (3.0.2)
       multi_json
-      rack-protection
-      rack-test
-      sinatra (~> 1.4.0)
-      tilt (>= 1.3, < 3)
+      mustermann (~> 3.0)
+      rack-protection (= 3.0.2)
+      sinatra (= 3.0.2)
+      tilt (~> 2.0)
     stringex (1.5.1)
-    tilt (2.0.2)
+    tilt (2.0.11)
     twilio-ruby (5.0.0)
       faraday (~> 0.9)
       jwt (~> 1.5)
@@ -125,4 +127,4 @@ DEPENDENCIES
   twilio-ruby (>= 5.0.0)
 
 BUNDLED WITH
-   1.15.1
+   1.17.3
