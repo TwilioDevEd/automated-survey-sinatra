@@ -4,8 +4,8 @@ gem 'bcrypt'
 gem 'data_mapper'
 gem 'dm-postgres-adapter'
 gem 'pg'
-gem 'sinatra'
-gem 'sinatra-contrib'
+gem 'sinatra', '>= 2.2.3'
+gem 'sinatra-contrib', '>= 2.2.3'
 gem 'twilio-ruby', '>= 5.0.0'
 
 group :test, :development do
